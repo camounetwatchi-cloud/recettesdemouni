@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, ChefHat } from 'lucide-react';
 import { Search, Plus, ChefHat, MoreVertical } from 'lucide-react';
 
 export default function RecipeManager() {
