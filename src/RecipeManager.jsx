@@ -12,41 +12,41 @@ export default function RecipeManager() {
   const [ingredients, setIngredients] = useState([{ name: '', quantity: '' }]);
   const [steps, setSteps] = useState(['']);
   const [editingRecipe, setEditingRecipe] = useState(null);
-const [showMenu, setShowMenu] = useState(null);
+  const [showMenu, setShowMenu] = useState(null);
 
-useEffect(() => {
-  const loadData = async () => {
-    try {
-      const recipesData = await window.storage.get('recipes');
-      if (recipesData && recipesData.value) {
-        setRecipes(JSON.parse(recipesData.value));
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const recipesData = await window.storage.get('recipes');
+        if (recipesData && recipesData.value) {
+          setRecipes(JSON.parse(recipesData.value));
+        }
+      } catch (error) {
+        console.log('Aucune recette sauvegardée');
+        setRecipes([]);
       }
-    } catch (error) {
-      console.log('Aucune recette sauvegardée');
-      setRecipes([]);
-    }
 
-    try {
-      const historyData = await window.storage.get('search-history');
-      if (historyData && historyData.value) {
-        setSearchHistory(JSON.parse(historyData.value));
+      try {
+        const historyData = await window.storage.get('search-history');
+        if (historyData && historyData.value) {
+          setSearchHistory(JSON.parse(historyData.value));
+        }
+      } catch (error) {
+        console.log('Aucun historique');
+        setSearchHistory([]);
       }
-    } catch (error) {
-      console.log('Aucun historique');
-      setSearchHistory([]);
-    }
-  };
-  loadData();
-}, []);
+    };
+    loadData();
+  }, []);
 
-// Fermer le menu si on clique ailleurs
-useEffect(() => {
-  const handleClickOutside = () => setShowMenu(null);
-  if (showMenu) {
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }
-}, [showMenu]);
+  // Fermer le menu si on clique ailleurs
+  useEffect(() => {
+    const handleClickOutside = () => setShowMenu(null);
+    if (showMenu) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showMenu]);
 
   // Sauvegarder les recettes
   const saveRecipes = async (newRecipes) => {
@@ -83,6 +83,30 @@ useEffect(() => {
       ].slice(0, 10);
       saveSearchHistory(newHistory);
     }
+  };
+
+  // Supprimer une recette
+  const handleDeleteRecipe = async (recipeId) => {
+    if (window.confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
+      const updatedRecipes = recipes.filter(r => r.id !== recipeId);
+      await saveRecipes(updatedRecipes);
+      
+      // Retirer aussi de l'historique de recherche
+      const updatedHistory = searchHistory.filter(r => r.id !== recipeId);
+      saveSearchHistory(updatedHistory);
+      
+      setShowMenu(null);
+    }
+  };
+
+  // Modifier une recette
+  const handleEditRecipe = (recipe) => {
+    setEditingRecipe(recipe);
+    setRecipeName(recipe.name);
+    setIngredients(recipe.ingredients);
+    setSteps(recipe.steps);
+    setCurrentPage('add');
+    setShowMenu(null);
   };
 
   // Ajouter un ingrédient
@@ -127,29 +151,6 @@ useEffect(() => {
       alert('Veuillez entrer un nom de recette');
       return;
     }
-// Supprimer une recette
-const handleDeleteRecipe = async (recipeId) => {
-  if (window.confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
-    const updatedRecipes = recipes.filter(r => r.id !== recipeId);
-    await saveRecipes(updatedRecipes);
-    
-    // Retirer aussi de l'historique de recherche
-    const updatedHistory = searchHistory.filter(r => r.id !== recipeId);
-    saveSearchHistory(updatedHistory);
-    
-    setShowMenu(null);
-  }
-};
-
-// Modifier une recette
-const handleEditRecipe = (recipe) => {
-  setEditingRecipe(recipe);
-  setRecipeName(recipe.name);
-  setIngredients(recipe.ingredients);
-  setSteps(recipe.steps);
-  setCurrentPage('add');
-  setShowMenu(null);
-};
   
     const validIngredients = ingredients.filter(ing => ing.name.trim() && ing.quantity.trim());
     const validSteps = steps.filter(step => step.trim());
@@ -165,36 +166,34 @@ const handleEditRecipe = (recipe) => {
     }
 
     const newRecipe = {
-  id: editingRecipe ? editingRecipe.id : Date.now(),
-  name: recipeName,
-  ingredients: validIngredients,
-  steps: validSteps,
-  createdAt: editingRecipe ? editingRecipe.createdAt : new Date().toISOString()
-};
+      id: editingRecipe ? editingRecipe.id : Date.now(),
+      name: recipeName,
+      ingredients: validIngredients,
+      steps: validSteps,
+      createdAt: editingRecipe ? editingRecipe.createdAt : new Date().toISOString()
+    };
 
-if (editingRecipe) {
-  // Mise à jour d'une recette existante
-  const updatedRecipes = recipes.map(r => r.id === editingRecipe.id ? newRecipe : r);
-  await saveRecipes(updatedRecipes);
-  
-  // Mettre à jour aussi dans l'historique
-  const updatedHistory = searchHistory.map(r => r.id === editingRecipe.id ? newRecipe : r);
-  saveSearchHistory(updatedHistory);
-  
-  setEditingRecipe(null);
-} else {
-  // Nouvelle recette
-  await saveRecipes([...recipes, newRecipe]);
-}
-
-    await saveRecipes([...recipes, newRecipe]);
+    if (editingRecipe) {
+      // Mise à jour d'une recette existante
+      const updatedRecipes = recipes.map(r => r.id === editingRecipe.id ? newRecipe : r);
+      await saveRecipes(updatedRecipes);
+      
+      // Mettre à jour aussi dans l'historique
+      const updatedHistory = searchHistory.map(r => r.id === editingRecipe.id ? newRecipe : r);
+      saveSearchHistory(updatedHistory);
+      
+      setEditingRecipe(null);
+    } else {
+      // Nouvelle recette
+      await saveRecipes([...recipes, newRecipe]);
+    }
 
     // Réinitialiser le formulaire
     setRecipeName('');
     setIngredients([{ name: '', quantity: '' }]);
     setSteps(['']);
     
-    alert('Recette ajoutée avec succès !');
+    alert('Recette enregistrée avec succès !');
     setCurrentPage('search');
   };
 
@@ -210,7 +209,13 @@ if (editingRecipe) {
             </div>
             <div className="flex gap-4">
               <button
-                onClick={() => setCurrentPage('search')}
+                onClick={() => {
+                  setCurrentPage('search');
+                  setEditingRecipe(null);
+                  setRecipeName('');
+                  setIngredients([{ name: '', quantity: '' }]);
+                  setSteps(['']);
+                }}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   currentPage === 'search'
                     ? 'bg-orange-500 text-white'
@@ -221,7 +226,13 @@ if (editingRecipe) {
                 Trouver une recette
               </button>
               <button
-                onClick={() => setCurrentPage('add')}
+                onClick={() => {
+                  setCurrentPage('add');
+                  setEditingRecipe(null);
+                  setRecipeName('');
+                  setIngredients([{ name: '', quantity: '' }]);
+                  setSteps(['']);
+                }}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   currentPage === 'add'
                     ? 'bg-orange-500 text-white'
@@ -260,59 +271,69 @@ if (editingRecipe) {
               </div>
             </div>
 
-            <div
-  key={recipe.id}
-  className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative"
->
-  {/* Menu 3 points */}
-  <div className="absolute top-3 right-3">
-    <button
-      onClick={() => setShowMenu(showMenu === recipe.id ? null : recipe.id)}
-      className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-    >
-      <MoreVertical size={20} className="text-gray-500" />
-    </button>
-    
-    {showMenu === recipe.id && (
-      <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-        <button
-          onClick={() => handleEditRecipe(recipe)}
-          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-t-lg"
-        >
-          Modifier
-        </button>
-        <button
-          onClick={() => handleDeleteRecipe(recipe.id)}
-          className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 rounded-b-lg"
-        >
-          Supprimer
-        </button>
-      </div>
-    )}
-  </div>
+            {/* Historique de recherche */}
+            {searchHistory.length > 0 && (
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Résultats de recherche</h2>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {searchHistory.map((recipe) => (
+                    <div
+                      key={recipe.id}
+                      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative"
+                    >
+                      {/* Menu 3 points */}
+                      <div className="absolute top-3 right-3">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowMenu(showMenu === recipe.id ? null : recipe.id);
+                          }}
+                          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                        >
+                          <MoreVertical size={20} className="text-gray-500" />
+                        </button>
+                        
+                        {showMenu === recipe.id && (
+                          <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                            <button
+                              onClick={() => handleEditRecipe(recipe)}
+                              className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-t-lg"
+                            >
+                              Modifier
+                            </button>
+                            <button
+                              onClick={() => handleDeleteRecipe(recipe.id)}
+                              className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 rounded-b-lg"
+                            >
+                              Supprimer
+                            </button>
+                          </div>
+                        )}
+                      </div>
 
-  <h3 className="text-xl font-bold text-orange-600 mb-3 pr-8">
-    {recipe.name}
-  </h3>
-  <div>
-    <h4 className="font-semibold text-gray-700 mb-2">Ingrédients:</h4>
-    <ul className="space-y-1">
-      {recipe.ingredients.map((ing, idx) => (
-        <li key={idx} className="text-gray-600 text-sm">
-          • {ing.quantity} {ing.name}
-        </li>
-      ))}
-    </ul>
-  </div>
-</div>
-                ))}
+                      <h3 className="text-xl font-bold text-orange-600 mb-3 pr-8">
+                        {recipe.name}
+                      </h3>
+                      <div>
+                        <h4 className="font-semibold text-gray-700 mb-2">Ingrédients:</h4>
+                        <ul className="space-y-1">
+                          {recipe.ingredients.map((ing, idx) => (
+                            <li key={idx} className="text-gray-600 text-sm">
+                              • {ing.quantity} {ing.name}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md p-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
-{editingRecipe ? 'Mettre à jour la recette' : 'Enregistrer la recette'}
+              {editingRecipe ? 'Mettre à jour la recette' : 'Enregistrer la recette'}
             </h2>
             
             <form onSubmit={handleSubmitRecipe} className="space-y-6">
@@ -413,7 +434,7 @@ if (editingRecipe) {
                 type="submit"
                 className="w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold text-lg"
               >
-                Enregistrer la recette
+                {editingRecipe ? 'Mettre à jour la recette' : 'Enregistrer la recette'}
               </button>
             </form>
           </div>
