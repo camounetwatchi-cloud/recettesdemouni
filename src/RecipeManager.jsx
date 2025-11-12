@@ -274,7 +274,7 @@ export default function RecipeManager() {
             {/* Historique de recherche */}
             {searchHistory.length > 0 && (
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Résultats de recherche</h2>
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Dernières recettes</h2>
                 <div className="grid gap-4 md:grid-cols-2">
                   {searchHistory.map((recipe) => (
                     <div
