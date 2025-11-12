@@ -8,3 +8,25 @@ import React from 'react'
        <App />
      </React.StrictMode>,
    )
+
+// Mock de l'API storage pour le développement local
+if (!window.storage) {
+  window.storage = {
+    async get(key) {
+      const value = localStorage.getItem(key);
+      return value ? { key, value, shared: false } : null;
+    },
+    async set(key, value, shared = false) {
+      localStorage.setItem(key, value);
+      return { key, value, shared };
+    },
+    async delete(key, shared = false) {
+      localStorage.removeItem(key);
+      return { key, deleted: true, shared };
+    },
+    async list(prefix = '', shared = false) {
+      const keys = Object.keys(localStorage).filter(k => k.startsWith(prefix));
+      return { keys, prefix, shared };
+    }
+  };
+}
