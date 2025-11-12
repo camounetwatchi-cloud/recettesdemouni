@@ -205,7 +205,7 @@ export default function RecipeManager() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2 text-orange-600">
               <ChefHat size={32} />
-              <span className="text-xl font-bold">Mes Recettes</span>
+              <span className="text-xl font-bold">Recettes de mounie</span>
             </div>
             <div className="flex gap-4">
               <button
