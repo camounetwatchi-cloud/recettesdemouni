@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, ChefHat } from 'lucide-react';
+import { Search, Plus, ChefHat, MoreVertical } from 'lucide-react';
 
 export default function RecipeManager() {
   const [currentPage, setCurrentPage] = useState('search');
@@ -11,6 +12,8 @@ export default function RecipeManager() {
   const [recipeName, setRecipeName] = useState('');
   const [ingredients, setIngredients] = useState([{ name: '', quantity: '' }]);
   const [steps, setSteps] = useState(['']);
+  const [editingRecipe, setEditingRecipe] = useState(null);
+const [showMenu, setShowMenu] = useState(null);
 
 useEffect(() => {
   const loadData = async () => {
@@ -36,6 +39,15 @@ useEffect(() => {
   };
   loadData();
 }, []);
+
+// Fermer le menu si on clique ailleurs
+useEffect(() => {
+  const handleClickOutside = () => setShowMenu(null);
+  if (showMenu) {
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }
+}, [showMenu]);
 
   // Sauvegarder les recettes
   const saveRecipes = async (newRecipes) => {
@@ -116,7 +128,30 @@ useEffect(() => {
       alert('Veuillez entrer un nom de recette');
       return;
     }
+// Supprimer une recette
+const handleDeleteRecipe = async (recipeId) => {
+  if (window.confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
+    const updatedRecipes = recipes.filter(r => r.id !== recipeId);
+    await saveRecipes(updatedRecipes);
+    
+    // Retirer aussi de l'historique de recherche
+    const updatedHistory = searchHistory.filter(r => r.id !== recipeId);
+    saveSearchHistory(updatedHistory);
+    
+    setShowMenu(null);
+  }
+};
 
+// Modifier une recette
+const handleEditRecipe = (recipe) => {
+  setEditingRecipe(recipe);
+  setRecipeName(recipe.name);
+  setIngredients(recipe.ingredients);
+  setSteps(recipe.steps);
+  setCurrentPage('add');
+  setShowMenu(null);
+};
+  
     const validIngredients = ingredients.filter(ing => ing.name.trim() && ing.quantity.trim());
     const validSteps = steps.filter(step => step.trim());
 
@@ -131,12 +166,27 @@ useEffect(() => {
     }
 
     const newRecipe = {
-      id: Date.now(),
-      name: recipeName,
-      ingredients: validIngredients,
-      steps: validSteps,
-      createdAt: new Date().toISOString()
-    };
+  id: editingRecipe ? editingRecipe.id : Date.now(),
+  name: recipeName,
+  ingredients: validIngredients,
+  steps: validSteps,
+  createdAt: editingRecipe ? editingRecipe.createdAt : new Date().toISOString()
+};
+
+if (editingRecipe) {
+  // Mise à jour d'une recette existante
+  const updatedRecipes = recipes.map(r => r.id === editingRecipe.id ? newRecipe : r);
+  await saveRecipes(updatedRecipes);
+  
+  // Mettre à jour aussi dans l'historique
+  const updatedHistory = searchHistory.map(r => r.id === editingRecipe.id ? newRecipe : r);
+  saveSearchHistory(updatedHistory);
+  
+  setEditingRecipe(null);
+} else {
+  // Nouvelle recette
+  await saveRecipes([...recipes, newRecipe]);
+}
 
     await saveRecipes([...recipes, newRecipe]);
 
@@ -211,38 +261,60 @@ useEffect(() => {
               </div>
             </div>
 
-            {/* Liste des dernières recettes recherchées */}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                {searchHistory.length > 0 ? 'Dernières recherches' : 'Aucune recherche récente'}
-              </h2>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {searchHistory.map((recipe) => (
-                  <div
-                    key={recipe.id}
-                    className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow"
-                  >
-                    <h3 className="text-xl font-bold text-orange-600 mb-3">
-                      {recipe.name}
-                    </h3>
-                    <div>
-                      <h4 className="font-semibold text-gray-700 mb-2">Ingrédients:</h4>
-                      <ul className="space-y-1">
-                        {recipe.ingredients.map((ing, idx) => (
-                          <li key={idx} className="text-gray-600 text-sm">
-                            • {ing.quantity} {ing.name}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
+            <div
+  key={recipe.id}
+  className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative"
+>
+  {/* Menu 3 points */}
+  <div className="absolute top-3 right-3">
+    <button
+      onClick={() => setShowMenu(showMenu === recipe.id ? null : recipe.id)}
+      className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+    >
+      <MoreVertical size={20} className="text-gray-500" />
+    </button>
+    
+    {showMenu === recipe.id && (
+      <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+        <button
+          onClick={() => handleEditRecipe(recipe)}
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-t-lg"
+        >
+          Modifier
+        </button>
+        <button
+          onClick={() => handleDeleteRecipe(recipe.id)}
+          className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 rounded-b-lg"
+        >
+          Supprimer
+        </button>
+      </div>
+    )}
+  </div>
+
+  <h3 className="text-xl font-bold text-orange-600 mb-3 pr-8">
+    {recipe.name}
+  </h3>
+  <div>
+    <h4 className="font-semibold text-gray-700 mb-2">Ingrédients:</h4>
+    <ul className="space-y-1">
+      {recipe.ingredients.map((ing, idx) => (
+        <li key={idx} className="text-gray-600 text-sm">
+          • {ing.quantity} {ing.name}
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
                 ))}
               </div>
             </div>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Ajouter une nouvelle recette</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+{editingRecipe ? 'Mettre à jour la recette' : 'Enregistrer la recette'}
+            </h2>
             
             <form onSubmit={handleSubmitRecipe} className="space-y-6">
               {/* Nom de la recette */}
