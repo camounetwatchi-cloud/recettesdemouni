@@ -12,25 +12,30 @@ export default function RecipeManager() {
   const [ingredients, setIngredients] = useState([{ name: '', quantity: '' }]);
   const [steps, setSteps] = useState(['']);
 
-  // Charger les recettes et l'historique au démarrage
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const recipesData = await window.storage.get('recipes');
-        if (recipesData) {
-          setRecipes(JSON.parse(recipesData.value));
-        }
-        
-        const historyData = await window.storage.get('search-history');
-        if (historyData) {
-          setSearchHistory(JSON.parse(historyData.value));
-        }
-      } catch (error) {
-        console.log('Première utilisation ou données non disponibles');
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      const recipesData = await window.storage.get('recipes');
+      if (recipesData && recipesData.value) {
+        setRecipes(JSON.parse(recipesData.value));
       }
-    };
-    loadData();
-  }, []);
+    } catch (error) {
+      console.log('Aucune recette sauvegardée');
+      setRecipes([]);
+    }
+
+    try {
+      const historyData = await window.storage.get('search-history');
+      if (historyData && historyData.value) {
+        setSearchHistory(JSON.parse(historyData.value));
+      }
+    } catch (error) {
+      console.log('Aucun historique');
+      setSearchHistory([]);
+    }
+  };
+  loadData();
+}, []);
 
   // Sauvegarder les recettes
   const saveRecipes = async (newRecipes) => {
