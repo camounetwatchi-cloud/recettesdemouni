@@ -197,6 +197,38 @@ export default function RecipeManager() {
     setCurrentPage('search');
   };
 
+  // Exporter les recettes en JSON
+const handleExportRecipes = () => {
+  const dataStr = JSON.stringify(recipes, null, 2);
+  const blob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `recettes-${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+};
+
+// Importer des recettes depuis un fichier JSON
+const handleImportRecipes = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = async (event) => {
+    try {
+      const importedRecipes = JSON.parse(event.target.result);
+      if (Array.isArray(importedRecipes)) {
+        await saveRecipes([...recipes, ...importedRecipes]);
+        alert(`${importedRecipes.length} recette(s) importée(s) avec succès !`);
+      }
+    } catch (error) {
+      alert('Erreur lors de l\'importation du fichier');
+    }
+  };
+  reader.readAsText(file);
+};
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
       {/* Navbar */}
@@ -242,6 +274,22 @@ export default function RecipeManager() {
                 <Plus className="inline mr-2" size={18} />
                 Ajouter une recette
               </button>
+              <button
+  onClick={handleExportRecipes}
+  className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors"
+  disabled={recipes.length === 0}
+>
+  📥 Exporter
+</button>
+<label className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors cursor-pointer">
+  📤 Importer
+  <input
+    type="file"
+    accept=".json"
+    onChange={handleImportRecipes}
+    className="hidden"
+  />
+</label>
             </div>
           </div>
         </div>
