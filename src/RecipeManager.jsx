@@ -319,12 +319,71 @@ const handleImportRecipes = (e) => {
               </div>
             </div>
 
-            {/* Historique de recherche */}
+            {/* Dernières recherches - 3 sur une ligne */}
             {searchHistory.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Dernières recherches</h2>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {searchHistory.slice(0, 3).map((recipe) => (
+                    <div
+                      key={recipe.id}
+                      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative"
+                    >
+                      {/* Menu 3 points */}
+                      <div className="absolute top-3 right-3">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowMenu(showMenu === recipe.id ? null : recipe.id);
+                          }}
+                          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                        >
+                          <MoreVertical size={20} className="text-gray-500" />
+                        </button>
+                        
+                        {showMenu === recipe.id && (
+                          <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                            <button
+                              onClick={() => handleEditRecipe(recipe)}
+                              className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-t-lg"
+                            >
+                              Modifier
+                            </button>
+                            <button
+                              onClick={() => handleDeleteRecipe(recipe.id)}
+                              className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 rounded-b-lg"
+                            >
+                              Supprimer
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      <h3 className="text-xl font-bold text-orange-600 mb-3 pr-8">
+                        {recipe.name}
+                      </h3>
+                      <div>
+                        <h4 className="font-semibold text-gray-700 mb-2">Ingrédients:</h4>
+                        <ul className="space-y-1">
+                          {recipe.ingredients.map((ing, idx) => (
+                            <li key={idx} className="text-gray-600 text-sm">
+                              • {ing.quantity} {ing.name}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Toutes les recettes par ordre alphabétique - 3 par ligne */}
+            {recipes.length > 0 && (
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Dernières recettes</h2>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {searchHistory.map((recipe) => (
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Toutes les recettes</h2>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {[...recipes].sort((a, b) => a.name.localeCompare(b.name)).map((recipe) => (
                     <div
                       key={recipe.id}
                       className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative"
