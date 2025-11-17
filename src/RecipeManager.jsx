@@ -215,11 +215,6 @@ export default function RecipeManager() {
     URL.revokeObjectURL(url);
   };
 
-  // Importer des recettes depuis un fichier JSON
-  const handleImportRecipes = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
     // Supprimer toutes les recettes
   const handleDeleteAllRecipes = async () => {
     if (window.confirm('⚠️ Êtes-vous sûr de vouloir supprimer TOUTES les recettes ? Cette action est irréversible.')) {
@@ -228,6 +223,12 @@ export default function RecipeManager() {
       alert('Toutes les recettes ont été supprimées.');
     }
   };
+
+  // Importer des recettes depuis un fichier JSON
+  const handleImportRecipes = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
     
     const reader = new FileReader();
     reader.onload = async (event) => {
