@@ -219,6 +219,15 @@ export default function RecipeManager() {
   const handleImportRecipes = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Supprimer toutes les recettes
+  const handleDeleteAllRecipes = async () => {
+    if (window.confirm('⚠️ Êtes-vous sûr de vouloir supprimer TOUTES les recettes ? Cette action est irréversible.')) {
+      await saveRecipes([]);
+      await saveSearchHistory([]);
+      alert('Toutes les recettes ont été supprimées.');
+    }
+  };
     
     const reader = new FileReader();
     reader.onload = async (event) => {
@@ -298,6 +307,13 @@ export default function RecipeManager() {
                   className="hidden"
                 />
               </label>
+              <button
+                onClick={handleDeleteAllRecipes}
+                className="px-4 py-2 rounded-lg font-medium text-red-600 hover:bg-red-50 transition-colors"
+                disabled={recipes.length === 0}
+              >
+                🗑️ Tout supprimer
+              </button>
             </div>
           </div>
         </div>
