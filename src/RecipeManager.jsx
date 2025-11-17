@@ -6,6 +6,7 @@ export default function RecipeManager() {
   const [recipes, setRecipes] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchHistory, setSearchHistory] = useState([]);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
   
   // Form states pour ajouter une recette
   const [recipeName, setRecipeName] = useState('');
@@ -107,6 +108,13 @@ export default function RecipeManager() {
     setSteps(recipe.steps);
     setCurrentPage('add');
     setShowMenu(null);
+    setSelectedRecipe(null);
+  };
+
+  // Ouvrir une recette en vue complète
+  const handleOpenRecipe = (recipe) => {
+    setSelectedRecipe(recipe);
+    setCurrentPage('view');
   };
 
   // Ajouter un ingrédient
@@ -144,9 +152,7 @@ export default function RecipeManager() {
   };
 
   // Soumettre une nouvelle recette
-  const handleSubmitRecipe = async (e) => {
-    e.preventDefault();
-    
+  const handleSubmitRecipe = async () => {
     if (!recipeName.trim()) {
       alert('Veuillez entrer un nom de recette');
       return;
@@ -198,36 +204,36 @@ export default function RecipeManager() {
   };
 
   // Exporter les recettes en JSON
-const handleExportRecipes = () => {
-  const dataStr = JSON.stringify(recipes, null, 2);
-  const blob = new Blob([dataStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `recettes-${new Date().toISOString().split('T')[0]}.json`;
-  link.click();
-  URL.revokeObjectURL(url);
-};
-
-// Importer des recettes depuis un fichier JSON
-const handleImportRecipes = (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  
-  const reader = new FileReader();
-  reader.onload = async (event) => {
-    try {
-      const importedRecipes = JSON.parse(event.target.result);
-      if (Array.isArray(importedRecipes)) {
-        await saveRecipes([...recipes, ...importedRecipes]);
-        alert(`${importedRecipes.length} recette(s) importée(s) avec succès !`);
-      }
-    } catch (error) {
-      alert('Erreur lors de l\'importation du fichier');
-    }
+  const handleExportRecipes = () => {
+    const dataStr = JSON.stringify(recipes, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `recettes-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
-  reader.readAsText(file);
-};
+
+  // Importer des recettes depuis un fichier JSON
+  const handleImportRecipes = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const importedRecipes = JSON.parse(event.target.result);
+        if (Array.isArray(importedRecipes)) {
+          await saveRecipes([...recipes, ...importedRecipes]);
+          alert(`${importedRecipes.length} recette(s) importée(s) avec succès !`);
+        }
+      } catch (error) {
+        alert('Erreur lors de l\'importation du fichier');
+      }
+    };
+    reader.readAsText(file);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
@@ -247,6 +253,7 @@ const handleImportRecipes = (e) => {
                   setRecipeName('');
                   setIngredients([{ name: '', quantity: '' }]);
                   setSteps(['']);
+                  setSelectedRecipe(null);
                 }}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   currentPage === 'search'
@@ -264,6 +271,7 @@ const handleImportRecipes = (e) => {
                   setRecipeName('');
                   setIngredients([{ name: '', quantity: '' }]);
                   setSteps(['']);
+                  setSelectedRecipe(null);
                 }}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   currentPage === 'add'
@@ -275,21 +283,21 @@ const handleImportRecipes = (e) => {
                 Ajouter une recette
               </button>
               <button
-  onClick={handleExportRecipes}
-  className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors"
-  disabled={recipes.length === 0}
->
-  📥 Exporter
-</button>
-<label className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors cursor-pointer">
-  📤 Importer
-  <input
-    type="file"
-    accept=".json"
-    onChange={handleImportRecipes}
-    className="hidden"
-  />
-</label>
+                onClick={handleExportRecipes}
+                className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors"
+                disabled={recipes.length === 0}
+              >
+                📥 Exporter
+              </button>
+              <label className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors cursor-pointer">
+                📤 Importer
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportRecipes}
+                  className="hidden"
+                />
+              </label>
             </div>
           </div>
         </div>
@@ -297,7 +305,93 @@ const handleImportRecipes = (e) => {
 
       {/* Contenu principal */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {currentPage === 'search' ? (
+        {currentPage === 'view' && selectedRecipe ? (
+          /* Vue détaillée d'une recette */
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <button
+              onClick={() => {
+                setCurrentPage('search');
+                setSelectedRecipe(null);
+              }}
+              className="mb-6 px-4 py-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors font-medium"
+            >
+              ← Retour aux recettes
+            </button>
+
+            <div className="flex justify-between items-start mb-6">
+              <h1 className="text-3xl font-bold text-orange-600">
+                {selectedRecipe.name}
+              </h1>
+              
+              {/* Menu 3 points */}
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowMenu(showMenu === selectedRecipe.id ? null : selectedRecipe.id);
+                  }}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <MoreVertical size={24} className="text-gray-500" />
+                </button>
+                
+                {showMenu === selectedRecipe.id && (
+                  <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                    <button
+                      onClick={() => handleEditRecipe(selectedRecipe)}
+                      className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-t-lg"
+                    >
+                      Modifier
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleDeleteRecipe(selectedRecipe.id);
+                        setCurrentPage('search');
+                        setSelectedRecipe(null);
+                      }}
+                      className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 rounded-b-lg"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Ingrédients */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Ingrédients</h2>
+              <ul className="space-y-2">
+                {selectedRecipe.ingredients.map((ing, idx) => (
+                  <li key={idx} className="text-gray-700 text-lg">
+                    • <span className="font-medium">{ing.quantity}</span> {ing.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Étapes */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">Étapes de préparation</h2>
+              <ol className="space-y-4">
+                {selectedRecipe.steps.map((step, idx) => (
+                  <li key={idx} className="flex gap-4">
+                    <span className="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">
+                      {idx + 1}
+                    </span>
+                    <p className="text-gray-700 text-lg pt-1">{step}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Tips - Section vide pour l'instant */}
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Tips & Astuces</h2>
+              <p className="text-gray-500 italic">Cette section sera ajoutée plus tard...</p>
+            </div>
+          </div>
+        ) : currentPage === 'search' ? (
           <div>
             {/* Barre de recherche */}
             <div className="bg-white rounded-lg shadow-md p-6 mb-8">
@@ -327,7 +421,8 @@ const handleImportRecipes = (e) => {
                   {searchHistory.slice(0, 3).map((recipe) => (
                     <div
                       key={recipe.id}
-                      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative"
+                      onClick={() => handleOpenRecipe(recipe)}
+                      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative cursor-pointer"
                     >
                       {/* Menu 3 points */}
                       <div className="absolute top-3 right-3">
@@ -386,7 +481,8 @@ const handleImportRecipes = (e) => {
                   {[...recipes].sort((a, b) => a.name.localeCompare(b.name)).map((recipe) => (
                     <div
                       key={recipe.id}
-                      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative"
+                      onClick={() => handleOpenRecipe(recipe)}
+                      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative cursor-pointer"
                     >
                       {/* Menu 3 points */}
                       <div className="absolute top-3 right-3">
@@ -443,7 +539,7 @@ const handleImportRecipes = (e) => {
               {editingRecipe ? 'Mettre à jour la recette' : 'Enregistrer la recette'}
             </h2>
             
-            <form onSubmit={handleSubmitRecipe} className="space-y-6">
+            <div className="space-y-6">
               {/* Nom de la recette */}
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">
@@ -538,12 +634,12 @@ const handleImportRecipes = (e) => {
 
               {/* Bouton de soumission */}
               <button
-                type="submit"
+                onClick={handleSubmitRecipe}
                 className="w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold text-lg"
               >
                 {editingRecipe ? 'Mettre à jour la recette' : 'Enregistrer la recette'}
               </button>
-            </form>
+            </div>
           </div>
         )}
       </div>
