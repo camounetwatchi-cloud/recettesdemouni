@@ -9,7 +9,18 @@ export default function RecipeScanner({ onRecipeExtracted, onClose }) {
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
-  const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+  // Obtenir la clé API (avec fallback)
+  const getApiKey = () => {
+    const key = import.meta.env.VITE_GOOGLE_API_KEY;
+    console.log('DEBUG: VITE_GOOGLE_API_KEY =', key ? '✓ Chargée' : '✗ Non définie');
+    console.log('DEBUG: All env vars:', Object.keys(import.meta.env).filter(k => k.includes('VITE')));
+    if (!key) {
+      console.error('VITE_GOOGLE_API_KEY non configurée');
+      throw new Error('Clé API Google non configurée');
+    }
+    return key;
+  };
+
   const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
   // Convertir image en base64
@@ -55,7 +66,14 @@ Important:
 - Si une information n'est pas visible, mets une chaîne vide ""
 - Retourne UNIQUEMENT le JSON, aucun texte supplémentaire`;
 
-      const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+      // Debug: Vérifier que la clé API est disponible
+      const apiKey = getApiKey();
+      console.log('DEBUG: API Key loaded successfully, length =', apiKey.length);
+      
+      const fullUrl = `${API_URL}?key=${apiKey}`;
+      console.log('DEBUG: Sending request to Gemini API...');
+
+      const response = await fetch(fullUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,8 +97,11 @@ Important:
         }),
       });
 
+      console.log('DEBUG: Gemini API response status =', response.status);
+
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('DEBUG: Gemini API error response =', errorData);
         throw new Error(errorData.error?.message || 'Erreur lors de l\'appel API Gemini');
       }
 
@@ -125,9 +146,12 @@ Important:
       setLoading(true);
       setError(null);
       
-      // Vérifier le type
-      if (!file.type.startsWith('image/')) {
-        setError('Veuillez sélectionner une image valide');
+      // Vérifier le type - accepter les formats image courants
+      const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
+      const isValidType = file.type.startsWith('image/') || validImageTypes.includes(file.type);
+      
+      if (!isValidType) {
+        setError('Veuillez sélectionner une image valide (JPG, PNG, GIF, WebP, HEIC)');
         setLoading(false);
         return;
       }
@@ -143,10 +167,13 @@ Important:
           
           let mimeType = file.type;
           
-          // Pour HEIC, convertir en JPEG
+          // Pour HEIC/HEIF, utiliser un type MIME supporté par Gemini
           if (file.type === 'image/heic' || file.type === 'image/heif') {
             mimeType = 'image/jpeg';
+            console.log('INFO: Conversion HEIC -> JPEG pour Gemini API');
           }
+          
+          console.log('DEBUG: File info -', { fileName: file.name, fileType: file.type, mimeType });
           
           await extractRecipeFromImage(base64, mimeType);
         } catch (err) {
@@ -230,14 +257,14 @@ Important:
                   <input
                     ref={fileInputRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/*,.heic,.heif"
                     onChange={handleFileSelect}
                     className="hidden"
                   />
                   <input
                     ref={cameraInputRef}
                     type="file"
-                    accept="image/*"
+                    accept="image/*,.heic,.heif"
                     capture="environment"
                     onChange={handleFileSelect}
                     className="hidden"
