@@ -275,13 +275,22 @@ export default function RecipeManager() {
 
       console.log('💾 Sauvegarde de la recette:', newRecipe);
       
-      await saveRecipes([...recipes, newRecipe]);
+      // Utiliser saveRecipe au lieu de saveRecipes pour plus de rapidité
+      const saveResult = await saveRecipe(newRecipe);
       
-      console.log('✅ Recette sauvegardée avec succès!');
+      if (!saveResult) {
+        throw new Error('Erreur Firebase lors de la sauvegarde');
+      }
       
+      console.log('✅ Recette sauvegardée avec succès! En attente de synchronisation...');
+      
+      // Attendre un peu que le listener Firestore mette à jour
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('🔄 Fermeture du scanner et actualisation de la page...');
       setShowScanner(false);
       setCurrentPage('search');
-      alert('Recette ajoutée avec succès ! 🎉');
+      alert('✅ Recette ajoutée avec succès ! 🎉');
     } catch (error) {
       console.error('❌ Erreur lors de l\'ajout de la recette:', error);
       alert('Erreur: ' + (error.message || 'Impossible d\'ajouter la recette'));
