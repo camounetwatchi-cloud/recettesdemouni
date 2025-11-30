@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, ChefHat, MoreVertical } from 'lucide-react';
+import { Search, Plus, ChefHat, MoreVertical, Camera } from 'lucide-react';
+import RecipeScanner from './RecipeScanner';
 
 export default function RecipeManager() {
   const [currentPage, setCurrentPage] = useState('search');
@@ -14,6 +15,7 @@ export default function RecipeManager() {
   const [steps, setSteps] = useState(['']);
   const [editingRecipe, setEditingRecipe] = useState(null);
   const [showMenu, setShowMenu] = useState(null);
+  const [showScanner, setShowScanner] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -245,16 +247,42 @@ export default function RecipeManager() {
     reader.readAsText(file);
   };
 
+  // Traiter une recette extraite du scanner
+  const handleRecipeExtracted = async (extractedRecipe) => {
+    const newRecipe = {
+      id: Date.now(),
+      name: extractedRecipe.name,
+      ingredients: extractedRecipe.ingredients || [],
+      steps: extractedRecipe.steps || [],
+      servings: extractedRecipe.servings || '',
+      cookTime: extractedRecipe.cookTime || '',
+      prepTime: extractedRecipe.prepTime || '',
+      difficulty: extractedRecipe.difficulty || '',
+      createdAt: new Date().toISOString()
+    };
+
+    await saveRecipes([...recipes, newRecipe]);
+    setShowScanner(false);
+    setCurrentPage('search');
+    alert('Recette ajoutée avec succès !');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
       {/* Navbar */}
       <nav className="bg-white shadow-md">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2 text-orange-600">
+            <button
+              onClick={() => {
+                setCurrentPage('search');
+                setSelectedRecipe(null);
+              }}
+              className="flex items-center gap-2 text-orange-600 hover:opacity-70 transition-opacity cursor-pointer"
+            >
               <ChefHat size={32} />
               <span className="text-xl font-bold">Recettes de mounie</span>
-            </div>
+            </button>
             <div className="flex gap-4">
               <button
                 onClick={() => {
@@ -273,6 +301,13 @@ export default function RecipeManager() {
               >
                 <Search className="inline mr-2" size={18} />
                 Trouver une recette
+              </button>
+              <button
+                onClick={() => setShowScanner(true)}
+                className="px-4 py-2 rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 transition-colors"
+              >
+                <Camera className="inline mr-2" size={18} />
+                Scanner une recette
               </button>
               <button
                 onClick={() => {
@@ -316,6 +351,9 @@ export default function RecipeManager() {
                 🗑️ Tout supprimer
               </button>
             </div>
+          </div>
+          <div className="text-center py-2 text-gray-700 font-medium">
+            Chef Mounie, c'est plus de {recipes.length} recette{recipes.length > 1 ? 's' : ''} maitrisées
           </div>
         </div>
       </nav>
@@ -381,7 +419,7 @@ export default function RecipeManager() {
               <ul className="space-y-2">
                 {selectedRecipe.ingredients.map((ing, idx) => (
                   <li key={idx} className="text-gray-700 text-lg">
-                    • <span className="font-medium">{ing.quantity}</span> {ing.name}
+                    • <span className="font-medium">{ing.name}</span>: {ing.quantity}
                   </li>
                 ))}
               </ul>
@@ -435,9 +473,9 @@ export default function RecipeManager() {
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Dernières recherches</h2>
                 <div className="grid gap-4 md:grid-cols-3">
-                  {searchHistory.slice(0, 3).map((recipe) => (
+                  {searchHistory.slice(0, 3).map((recipe, idx) => (
                     <div
-                      key={recipe.id}
+                      key={`history-${recipe.id}-${idx}`}
                       onClick={() => handleOpenRecipe(recipe)}
                       className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative cursor-pointer"
                     >
@@ -479,7 +517,7 @@ export default function RecipeManager() {
                         <ul className="space-y-1">
                           {recipe.ingredients.map((ing, idx) => (
                             <li key={idx} className="text-gray-600 text-sm">
-                              • {ing.quantity} {ing.name}
+                              • {ing.name}: {ing.quantity}
                             </li>
                           ))}
                         </ul>
@@ -495,9 +533,9 @@ export default function RecipeManager() {
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Toutes les recettes</h2>
                 <div className="grid gap-4 md:grid-cols-3">
-                  {[...recipes].sort((a, b) => a.name.localeCompare(b.name)).map((recipe) => (
+                  {[...recipes].sort((a, b) => a.name.localeCompare(b.name)).map((recipe, idx) => (
                     <div
-                      key={recipe.id}
+                      key={`recipe-${recipe.id}-${idx}`}
                       onClick={() => handleOpenRecipe(recipe)}
                       className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative cursor-pointer"
                     >
@@ -539,7 +577,7 @@ export default function RecipeManager() {
                         <ul className="space-y-1">
                           {recipe.ingredients.map((ing, idx) => (
                             <li key={idx} className="text-gray-600 text-sm">
-                              • {ing.quantity} {ing.name}
+                              • {ing.name}: {ing.quantity}
                             </li>
                           ))}
                         </ul>
@@ -577,7 +615,7 @@ export default function RecipeManager() {
                   Ingrédients
                 </label>
                 {ingredients.map((ing, index) => (
-                  <div key={index} className="flex gap-2 mb-2">
+                  <div key={`ingredient-${index}`} className="flex gap-2 mb-2">
                     <input
                       type="text"
                       value={ing.name}
@@ -618,7 +656,7 @@ export default function RecipeManager() {
                   Étapes de préparation
                 </label>
                 {steps.map((step, index) => (
-                  <div key={index} className="flex gap-2 mb-2">
+                  <div key={`step-${index}`} className="flex gap-2 mb-2">
                     <span className="px-3 py-2 bg-orange-100 text-orange-600 rounded-lg font-semibold">
                       {index + 1}
                     </span>
@@ -660,6 +698,14 @@ export default function RecipeManager() {
           </div>
         )}
       </div>
+
+      {/* Modal du Scanner */}
+      {showScanner && (
+        <RecipeScanner
+          onRecipeExtracted={handleRecipeExtracted}
+          onClose={() => setShowScanner(false)}
+        />
+      )}
     </div>
   );
 }
