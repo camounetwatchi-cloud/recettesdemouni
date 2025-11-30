@@ -1,214 +1,76 @@
-# 🍳 Gestionnaire de Recettes avec Scanner IA
+# 🍳 Recettes de Mouni
 
-Gestionnaire de recettes avec scanner automatique utilisant l'IA Google Gemini pour convertir des photos de recettes en données structurées JSON.
+Application de gestion de recettes de cuisine avec scanner IA.
 
 ## ✨ Fonctionnalités
 
-- 📸 **Scanner de recettes** - Prenez une photo ou importez une image de recette
-- 🤖 **Analyse IA** - Google Gemini 2.0 Flash extrait automatiquement les données
-- 📋 **Données structurées** - Nom, ingrédients, étapes, temps, portions, difficulté
-- 💾 **Stockage local** - Toutes les recettes sauvegardées dans localStorage
-- 🔍 **Recherche** - Trouvez vos recettes facilement
-- 📥📤 **Import/Export** - Sauvegardez et partagez vos recettes en JSON
-- 📱 **Responsive** - Fonctionne sur desktop, tablette et mobile
-- 🎨 **Interface moderne** - Tailwind CSS + Lucide Icons
+- 📸 **Scanner de recettes** - Prenez une photo d'une recette et l'IA extrait automatiquement les informations
+- 🔍 **Recherche** - Recherchez dans vos recettes par nom ou ingrédient
+- ☁️ **Synchronisation cloud** - Vos recettes sont synchronisées sur tous vos appareils via Firebase
+- 📱 **Responsive** - Fonctionne sur mobile, tablette et desktop
 
 ## 🚀 Démarrage rapide
 
 ### Installation
+
 ```bash
 npm install
-```
-
-### Développement
-```bash
 npm run dev
 ```
 
-Ouvrez http://localhost:5173 dans votre navigateur.
+### Configuration
 
-### Production
-```bash
-npm run build
-npm run preview
+1. Créez un fichier `.env.local` à la racine du projet
+2. Ajoutez vos clés API (voir ci-dessous)
+3. Redémarrez le serveur de développement
+
+```env
+# Google Gemini API (pour le scanner)
+VITE_GOOGLE_API_KEY=votre_cle_api_google
+
+# Firebase (pour la synchronisation)
+VITE_FIREBASE_API_KEY=votre_cle_firebase
+VITE_FIREBASE_AUTH_DOMAIN=votre_projet.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=votre_projet
+VITE_FIREBASE_STORAGE_BUCKET=votre_projet.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=votre_sender_id
+VITE_FIREBASE_APP_ID=votre_app_id
 ```
 
-## 📸 Comment utiliser
+## 🛠️ Technologies
 
-1. **Cliquez sur "Scanner une recette"** (bouton vert en haut)
-2. **Sélectionnez une image** :
-   - Importer une photo de votre ordinateur
-   - Ou prendre une photo avec votre caméra
-3. **Attendez l'analyse** (2-5 secondes)
-4. **Vérifiez les données** extraites
-5. **Cliquez "Ajouter cette recette"** pour sauvegarder
-
-L'IA extrait automatiquement :
-- Nom de la recette
-- Ingrédients avec quantités
-- Étapes de préparation
-- Temps (préparation + cuisson)
-- Nombre de portions
-- Niveau de difficulté
-
-## 🛠️ Technologie
-
-- **React 18.2.0** - Framework UI
-- **Vite 4.3.9** - Build tool ultra-rapide
-- **Tailwind CSS 3.3.0** - Styling utilitaire
-- **Lucide React 0.263.1** - Icons
+- **React 18** - Framework UI
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **Firebase Firestore** - Base de données cloud
 - **Google Gemini API** - Analyse IA des images
 
-## 🔐 Configuration API
+## 🔐 Sécurité
 
-La clé API Google Gemini est intégrée et prête à l'emploi :
-```
-AIzaSyB2etdOlkT4-k1R4Ir881dfyE5fTiAPBTQ
-```
+⚠️ **IMPORTANT** : Ne commitez **JAMAIS** vos clés API dans Git !
 
-**Pour la production** (recommandé), créez un fichier `.env.local` :
-```
-VITE_GEMINI_API_KEY=AIzaSyB2etdOlkT4-k1R4Ir881dfyE5fTiAPBTQ
-```
+- Les clés doivent être dans `.env.local` (exclu de Git via `.gitignore`)
+- Pour la production (Vercel), ajoutez les clés dans Environment Variables
 
-Voir `SECURITY_API_KEY.md` pour plus de détails sur la sécurité.
-
-## 📁 Structure du projet
+## 📁 Structure
 
 ```
 src/
 ├── App.jsx              # Composant principal
-├── RecipeManager.jsx    # Gestionnaire recettes
-├── RecipeScanner.jsx    # Scanner IA (NOUVEAU)
-├── index.css            # Styles Tailwind
-└── main.jsx             # Point d'entrée
+├── RecipeManager.jsx    # Gestionnaire de recettes
+├── RecipeScanner.jsx    # Scanner IA
+├── config.js            # Configuration centralisée
+├── firebase.js          # Configuration Firebase
+├── services/
+│   └── firestoreService.js  # Service Firestore
+└── components/
+    └── CategoryCloud.jsx    # Nuage de catégories
 ```
 
-## 📚 Documentation
+## 🌐 Déploiement
 
-- **[DEMARRAGE.md](DEMARRAGE.md)** - Vue d'ensemble complète
-- **[QUICK_START.md](QUICK_START.md)** - Démarrage en 5 minutes
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Architecture système
-- **[SCANNER_SETUP.md](SCANNER_SETUP.md)** - Installation détaillée
-- **[SECURITY_API_KEY.md](SECURITY_API_KEY.md)** - Sécurité API
-- **[TESTING.md](TESTING.md)** - Tests et troubleshooting
-- **[JSON_EXAMPLES.md](JSON_EXAMPLES.md)** - Exemples de données
-- **[CHECKLIST.md](CHECKLIST.md)** - Checklist complète
-- **[INDEX.md](INDEX.md)** - Navigation documentation
-
-## 🧪 Tests
-
-```bash
-# Développement avec hot-reload
-npm run dev
-
-# Build production
-npm run build
-
-# Prévisualiser le build
-npm run preview
-```
-
-## 🐛 Troubleshooting
-
-**Le scanner ne fonctionne pas?**
-- Vérifiez votre connexion Internet
-- Assurez-vous d'utiliser une image claire
-- Consultez `TESTING.md` pour solutions complètes
-
-**L'API Gemini retourne une erreur?**
-- Vérifiez la clé API
-- Vérifiez les quotas Google Cloud
-- Voir `SECURITY_API_KEY.md`
-
-**Des questions?**
-- Consultez `QUICK_START.md` pour commencer
-- Consultez `INDEX.md` pour naviguer la documentation
-
-## 🎯 Exemples
-
-### Scanner une recette
-1. Photo de recette écrite
-2. IA extrait automatiquement
-3. Données affichées pour vérification
-4. Ajoutée à votre collection
-
-### Export/Import
-- **Exporter** : Télécharger toutes les recettes en JSON
-- **Importer** : Charger des recettes depuis un fichier JSON
-- Utile pour sauvegarder ou partager
-
-### Recherche
-- Tapez le nom d'une recette
-- Filtre instantané
-- Voir aussi l'historique de recherche
-
-## 📱 Responsive Design
-
-Fonctionne parfaitement sur :
-- 💻 Desktop (1920x1080+)
-- 📱 Tablet (768-1024px)
-- 📱 Mobile (< 768px)
-- 📱 Caméra mobile pour photos
-
-## 🚀 Déploiement
-
-### Vercel
-```bash
-npm run build
-vercel --prod
-```
-
-### Netlify
-```bash
-npm run build
-netlify deploy
-```
-
-### GitHub Pages
-```bash
-npm run build
-# Déployer le dossier dist/
-```
-
-N'oubliez pas d'ajouter la variable d'env `VITE_GEMINI_API_KEY` chez votre hébergeur!
-
-## 💡 Fonctionnalités futures
-
-- [ ] Ajouter des tips & astuces
-- [ ] Calculer nutritionnel
-- [ ] Notes personnelles
-- [ ] Favoris / étoiles
-- [ ] Partage de recettes
-- [ ] Sync multi-appareils (Firebase)
-- [ ] Recommandations IA
+L'application est déployée sur Vercel : https://recettesdemouni.vercel.app/
 
 ## 📄 License
 
-Ce projet utilise :
-- Google Gemini API
-- React (MIT)
-- Tailwind CSS (MIT)
-- Lucide React (MIT)
-- Vite (MIT)
-
-## 🙋 Support
-
-Pour toute question :
-1. Consultez la documentation (fichiers `.md`)
-2. Vérifiez les exemples dans `JSON_EXAMPLES.md`
-3. Lisez le troubleshooting dans `TESTING.md`
-
-## 🎉 Merci!
-
-Merci d'utiliser le Scanner de Recettes Gemini! 
-
-Nous espérons que cet outil facilite votre gestion de recettes. 
-
-**À bientôt dans la cuisine! 👨‍🍳📸**
-
----
-
-**Version** : 1.0  
-**Dernière mise à jour** : 30 novembre 2024  
-**Status** : ✅ Production Ready
+MIT
