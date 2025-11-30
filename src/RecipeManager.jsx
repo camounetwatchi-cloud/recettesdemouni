@@ -267,6 +267,8 @@ export default function RecipeManager() {
     alert('Recette ajoutée avec succès !');
   };
 
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
       {/* Navbar */}
@@ -278,12 +280,13 @@ export default function RecipeManager() {
                 setCurrentPage('search');
                 setSelectedRecipe(null);
               }}
-              className="flex items-center gap-2 text-orange-600 hover:opacity-70 transition-opacity cursor-pointer"
+              className="flex items-center gap-1 md:gap-2 text-orange-600 hover:opacity-70 transition-opacity cursor-pointer"
             >
-              <ChefHat size={32} />
-              <span className="text-xl font-bold">Recettes de mounie</span>
+              <ChefHat size={24} className="md:w-8 md:h-8" />
+              <span className="text-lg md:text-xl font-bold hidden sm:inline">Recettes de mounie</span>
+              <span className="text-sm md:text-base font-bold sm:hidden">Mounie</span>
             </button>
-            <div className="flex gap-4">
+            <div className="hidden md:flex gap-2 lg:gap-4">
               <button
                 onClick={() => {
                   setCurrentPage('search');
@@ -293,21 +296,21 @@ export default function RecipeManager() {
                   setSteps(['']);
                   setSelectedRecipe(null);
                 }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium transition-colors ${
                   currentPage === 'search'
                     ? 'bg-orange-500 text-white'
                     : 'text-gray-700 hover:bg-orange-100'
                 }`}
               >
-                <Search className="inline mr-2" size={18} />
-                Trouver une recette
+                <Search className="inline mr-1 lg:mr-2 w-4 h-4 lg:w-5 lg:h-5" size={16} />
+                <span className="hidden lg:inline">Trouver</span>
               </button>
               <button
                 onClick={() => setShowScanner(true)}
-                className="px-4 py-2 rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 transition-colors"
+                className="px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 transition-colors"
               >
-                <Camera className="inline mr-2" size={18} />
-                Scanner une recette
+                <Camera className="inline mr-1 lg:mr-2" size={16} />
+                <span className="hidden lg:inline">Scanner</span>
               </button>
               <button
                 onClick={() => {
@@ -318,24 +321,26 @@ export default function RecipeManager() {
                   setSteps(['']);
                   setSelectedRecipe(null);
                 }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                className={`px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium transition-colors ${
                   currentPage === 'add'
                     ? 'bg-orange-500 text-white'
                     : 'text-gray-700 hover:bg-orange-100'
                 }`}
               >
-                <Plus className="inline mr-2" size={18} />
-                Ajouter une recette
+                <Plus className="inline mr-1 lg:mr-2" size={16} />
+                <span className="hidden lg:inline">Ajouter</span>
               </button>
               <button
                 onClick={handleExportRecipes}
-                className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors"
+                className="px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors"
                 disabled={recipes.length === 0}
               >
-                📥 Exporter
+                <span className="hidden lg:inline">📥 Exporter</span>
+                <span className="lg:hidden">📥</span>
               </button>
-              <label className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors cursor-pointer">
-                📤 Importer
+              <label className="px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors cursor-pointer">
+                <span className="hidden lg:inline">📤 Importer</span>
+                <span className="lg:hidden">📤</span>
                 <input
                   type="file"
                   accept=".json"
@@ -345,21 +350,99 @@ export default function RecipeManager() {
               </label>
               <button
                 onClick={handleDeleteAllRecipes}
-                className="px-4 py-2 rounded-lg font-medium text-red-600 hover:bg-red-50 transition-colors"
+                className="px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium text-red-600 hover:bg-red-50 transition-colors"
                 disabled={recipes.length === 0}
               >
-                🗑️ Tout supprimer
+                <span className="hidden lg:inline">🗑️ Supprimer</span>
+                <span className="lg:hidden">🗑️</span>
               </button>
             </div>
+            
+            {/* Menu mobile */}
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="md:hidden p-2 text-orange-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
-          <div className="text-center py-2 text-gray-700 font-medium">
-            Chef Mounie, c'est plus de {recipes.length} recette{recipes.length > 1 ? 's' : ''} maitrisées
+          
+          {/* Menu déroulant mobile */}
+          {showMobileMenu && (
+            <div className="md:hidden grid grid-cols-2 gap-2 pb-4">
+              <button
+                onClick={() => {
+                  setCurrentPage('search');
+                  setEditingRecipe(null);
+                  setShowMobileMenu(false);
+                }}
+                className={`px-3 py-2 text-sm rounded-lg font-medium transition-colors ${
+                  currentPage === 'search'
+                    ? 'bg-orange-500 text-white'
+                    : 'text-gray-700 hover:bg-orange-100'
+                }`}
+              >
+                🔍 Chercher
+              </button>
+              <button
+                onClick={() => {
+                  setShowScanner(true);
+                  setShowMobileMenu(false);
+                }}
+                className="px-3 py-2 text-sm rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 transition-colors"
+              >
+                📷 Scanner
+              </button>
+              <button
+                onClick={() => {
+                  setCurrentPage('add');
+                  setEditingRecipe(null);
+                  setShowMobileMenu(false);
+                }}
+                className={`px-3 py-2 text-sm rounded-lg font-medium transition-colors ${
+                  currentPage === 'add'
+                    ? 'bg-orange-500 text-white'
+                    : 'text-gray-700 hover:bg-orange-100'
+                }`}
+              >
+                ➕ Ajouter
+              </button>
+              <button
+                onClick={handleExportRecipes}
+                className="px-3 py-2 text-sm rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors disabled:opacity-50"
+                disabled={recipes.length === 0}
+              >
+                📥 Export
+              </button>
+              <label className="px-3 py-2 text-sm rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors cursor-pointer">
+                📤 Import
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={handleImportRecipes}
+                  className="hidden"
+                />
+              </label>
+              <button
+                onClick={handleDeleteAllRecipes}
+                className="px-3 py-2 text-sm rounded-lg font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                disabled={recipes.length === 0}
+              >
+                🗑️ Tout
+              </button>
+            </div>
+          )}
+          
+          <div className="text-center py-2 text-gray-700 font-medium text-sm md:text-base">
+            Chef Mounie, c'est plus de {recipes.length} recette{recipes.length > 1 ? 's' : ''}
           </div>
         </div>
       </nav>
 
       {/* Contenu principal */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-4 md:py-8">
         {currentPage === 'view' && selectedRecipe ? (
           /* Vue détaillée d'une recette */
           <div className="bg-white rounded-lg shadow-md p-8">
@@ -470,9 +553,9 @@ export default function RecipeManager() {
 
             {/* Dernières recherches - 3 sur une ligne */}
             {searchHistory.length > 0 && (
-              <div className="mb-8">
+              <div className="mb-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Dernières recherches</h2>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   {searchHistory.slice(0, 3).map((recipe, idx) => (
                     <div
                       key={`history-${recipe.id}-${idx}`}
@@ -532,7 +615,7 @@ export default function RecipeManager() {
             {recipes.length > 0 && (
               <div className="mb-6">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Toutes les recettes</h2>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   {[...recipes].sort((a, b) => a.name.localeCompare(b.name)).map((recipe, idx) => (
                     <div
                       key={`recipe-${recipe.id}-${idx}`}
