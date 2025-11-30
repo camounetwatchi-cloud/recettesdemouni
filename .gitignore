@@ -5,6 +5,10 @@ node_modules
 .env.local
 .env.*.local
 
+# Firebase keys
+*firebase-adminsdk*.json
+firebase-*.json
+
 # Build output
 dist
 

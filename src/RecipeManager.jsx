@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, ChefHat, MoreVertical, Camera } from 'lucide-react';
 import RecipeScanner from './RecipeScanner';
+import CategoryCloud from './components/CategoryCloud';
+import { getRecipes, saveRecipe, saveRecipes, deleteRecipe, updateRecipe, onRecipesChange } from './services/firestoreService';
 
 export default function RecipeManager() {
   const [currentPage, setCurrentPage] = useState('search');
@@ -8,6 +10,7 @@ export default function RecipeManager() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchHistory, setSearchHistory] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [loading, setLoading] = useState(true);
   
   // Form states pour ajouter une recette
   const [recipeName, setRecipeName] = useState('');
@@ -18,28 +21,31 @@ export default function RecipeManager() {
   const [showScanner, setShowScanner] = useState(false);
 
   useEffect(() => {
+    // Charger les recettes depuis Firebase et écouter les changements en temps réel
     const loadData = async () => {
       try {
-        const recipesData = await window.storage.get('recipes');
-        if (recipesData && recipesData.value) {
-          setRecipes(JSON.parse(recipesData.value));
-        }
+        // Charger les recettes une première fois
+        const recipesData = await getRecipes();
+        setRecipes(recipesData);
+        setLoading(false);
+        
+        // Écouter les changements en temps réel
+        const unsubscribe = onRecipesChange((updatedRecipes) => {
+          setRecipes(updatedRecipes);
+        });
+        
+        return unsubscribe;
       } catch (error) {
-        console.log('Aucune recette sauvegardée');
-        setRecipes([]);
-      }
-
-      try {
-        const historyData = await window.storage.get('search-history');
-        if (historyData && historyData.value) {
-          setSearchHistory(JSON.parse(historyData.value));
-        }
-      } catch (error) {
-        console.log('Aucun historique');
-        setSearchHistory([]);
+        console.error('Erreur lors du chargement des recettes:', error);
+        setLoading(false);
       }
     };
-    loadData();
+    
+    const unsubscribePromise = loadData();
+    
+    return () => {
+      unsubscribePromise.then(unsub => unsub && unsub());
+    };
   }, []);
 
   // Fermer le menu si on clique ailleurs
@@ -51,20 +57,19 @@ export default function RecipeManager() {
     }
   }, [showMenu]);
 
-  // Sauvegarder les recettes
-  const saveRecipes = async (newRecipes) => {
+  // Sauvegarder les recettes dans Firebase
+  const saveRecipesFirebase = async (newRecipes) => {
     try {
-      await window.storage.set('recipes', JSON.stringify(newRecipes));
+      await saveRecipes(newRecipes);
       setRecipes(newRecipes);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde:', error);
     }
   };
 
-  // Sauvegarder l'historique de recherche
+  // Sauvegarder l'historique de recherche (stockage local)
   const saveSearchHistory = async (history) => {
     try {
-      await window.storage.set('search-history', JSON.stringify(history));
       setSearchHistory(history);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde de l\'historique:', error);
@@ -75,9 +80,15 @@ export default function RecipeManager() {
   const handleSearch = () => {
     if (!searchTerm.trim()) return;
 
-    const foundRecipes = recipes.filter(recipe =>
-      recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const foundRecipes = recipes.filter(recipe => {
+      const recipeName = recipe.name.toLowerCase();
+      const searchLower = searchTerm.toLowerCase();
+      
+      // Créer une regex qui cherche le mot complet avec des limites
+      // \b = limite de mot, \s = espace, ou début/fin de chaîne
+      const regex = new RegExp(`\\b${searchLower}\\b`, 'i');
+      return regex.test(recipeName);
+    });
 
     if (foundRecipes.length > 0) {
       const newHistory = [
@@ -91,8 +102,7 @@ export default function RecipeManager() {
   // Supprimer une recette
   const handleDeleteRecipe = async (recipeId) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
-      const updatedRecipes = recipes.filter(r => r.id !== recipeId);
-      await saveRecipes(updatedRecipes);
+      await deleteRecipe(recipeId);
       
       // Retirer aussi de l'historique de recherche
       const updatedHistory = searchHistory.filter(r => r.id !== recipeId);
@@ -183,8 +193,7 @@ export default function RecipeManager() {
 
     if (editingRecipe) {
       // Mise à jour d'une recette existante
-      const updatedRecipes = recipes.map(r => r.id === editingRecipe.id ? newRecipe : r);
-      await saveRecipes(updatedRecipes);
+      await updateRecipe(editingRecipe.id, newRecipe);
       
       // Mettre à jour aussi dans l'historique
       const updatedHistory = searchHistory.map(r => r.id === editingRecipe.id ? newRecipe : r);
@@ -193,7 +202,7 @@ export default function RecipeManager() {
       setEditingRecipe(null);
     } else {
       // Nouvelle recette
-      await saveRecipes([...recipes, newRecipe]);
+      await saveRecipe(newRecipe);
     }
 
     // Réinitialiser le formulaire
@@ -330,32 +339,6 @@ export default function RecipeManager() {
                 <Plus className="inline mr-1 lg:mr-2" size={16} />
                 <span className="hidden lg:inline">Ajouter</span>
               </button>
-              <button
-                onClick={handleExportRecipes}
-                className="px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors"
-                disabled={recipes.length === 0}
-              >
-                <span className="hidden lg:inline">📥 Exporter</span>
-                <span className="lg:hidden">📥</span>
-              </button>
-              <label className="px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors cursor-pointer">
-                <span className="hidden lg:inline">📤 Importer</span>
-                <span className="lg:hidden">📤</span>
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleImportRecipes}
-                  className="hidden"
-                />
-              </label>
-              <button
-                onClick={handleDeleteAllRecipes}
-                className="px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium text-red-600 hover:bg-red-50 transition-colors"
-                disabled={recipes.length === 0}
-              >
-                <span className="hidden lg:inline">🗑️ Supprimer</span>
-                <span className="lg:hidden">🗑️</span>
-              </button>
             </div>
             
             {/* Menu mobile */}
@@ -408,29 +391,6 @@ export default function RecipeManager() {
                 }`}
               >
                 ➕ Ajouter
-              </button>
-              <button
-                onClick={handleExportRecipes}
-                className="px-3 py-2 text-sm rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors disabled:opacity-50"
-                disabled={recipes.length === 0}
-              >
-                📥 Export
-              </button>
-              <label className="px-3 py-2 text-sm rounded-lg font-medium text-gray-700 hover:bg-orange-100 transition-colors cursor-pointer">
-                📤 Import
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleImportRecipes}
-                  className="hidden"
-                />
-              </label>
-              <button
-                onClick={handleDeleteAllRecipes}
-                className="px-3 py-2 text-sm rounded-lg font-medium text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
-                disabled={recipes.length === 0}
-              >
-                🗑️ Tout
               </button>
             </div>
           )}
@@ -531,92 +491,45 @@ export default function RecipeManager() {
           </div>
         ) : currentPage === 'search' ? (
           <div>
-            {/* Barre de recherche */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  placeholder="Rechercher une recette..."
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                />
-                <button
-                  onClick={handleSearch}
-                  className="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
-                >
-                  <Search size={20} />
-                </button>
-              </div>
-            </div>
-
-            {/* Dernières recherches - 3 sur une ligne */}
-            {searchHistory.length > 0 && (
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Dernières recherches</h2>
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  {searchHistory.slice(0, 3).map((recipe, idx) => (
-                    <div
-                      key={`history-${recipe.id}-${idx}`}
-                      onClick={() => handleOpenRecipe(recipe)}
-                      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative cursor-pointer"
-                    >
-                      {/* Menu 3 points */}
-                      <div className="absolute top-3 right-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowMenu(showMenu === recipe.id ? null : recipe.id);
-                          }}
-                          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                        >
-                          <MoreVertical size={20} className="text-gray-500" />
-                        </button>
-                        
-                        {showMenu === recipe.id && (
-                          <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                            <button
-                              onClick={() => handleEditRecipe(recipe)}
-                              className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-t-lg"
-                            >
-                              Modifier
-                            </button>
-                            <button
-                              onClick={() => handleDeleteRecipe(recipe.id)}
-                              className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 rounded-b-lg"
-                            >
-                              Supprimer
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      <h3 className="text-xl font-bold text-orange-600 mb-3 pr-8">
-                        {recipe.name}
-                      </h3>
-                      <div>
-                        <h4 className="font-semibold text-gray-700 mb-2">Ingrédients:</h4>
-                        <ul className="space-y-1">
-                          {recipe.ingredients.map((ing, idx) => (
-                            <li key={idx} className="text-gray-600 text-sm">
-                              • {ing.name}: {ing.quantity}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Nuage de mots avec barre de recherche intégrée */}
+            <CategoryCloud 
+              recipes={recipes} 
+              searchTerm={searchTerm} 
+              setSearchTerm={setSearchTerm}
+              onSearch={handleSearch}
+            />
 
             {/* Toutes les recettes par ordre alphabétique - 3 par ligne */}
             {recipes.length > 0 && (
               <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">Toutes les recettes</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-gray-800">
+                    {searchTerm ? 'Résultats filtrés' : 'Toutes les recettes'}
+                  </h2>
+                  {searchTerm && (
+                    <button
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSearchHistory([]);
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium text-sm"
+                    >
+                      ✕ Supprimer le filtre
+                    </button>
+                  )}
+                </div>
                 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  {[...recipes].sort((a, b) => a.name.localeCompare(b.name)).map((recipe, idx) => (
+                  {[...recipes]
+                    .filter(recipe => {
+                      if (!searchTerm.trim()) return true;
+                      const recipeName = recipe.name.toLowerCase();
+                      const searchLower = searchTerm.toLowerCase();
+                      // Utiliser une regex pour chercher le mot complet
+                      const regex = new RegExp(`\\b${searchLower}\\b`, 'i');
+                      return regex.test(recipeName);
+                    })
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((recipe, idx) => (
                     <div
                       key={`recipe-${recipe.id}-${idx}`}
                       onClick={() => handleOpenRecipe(recipe)}

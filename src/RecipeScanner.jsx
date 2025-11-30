@@ -9,7 +9,7 @@ export default function RecipeScanner({ onRecipeExtracted, onClose }) {
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
-  const API_KEY = 'AIzaSyB2etdOlkT4-k1R4Ir881dfyE5fTiAPBTQ';
+  const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
   const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
   // Convertir image en base64
