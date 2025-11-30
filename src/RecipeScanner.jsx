@@ -193,9 +193,20 @@ Important:
 
   // Accepter et ajouter la recette
   const handleAcceptRecipe = () => {
+    console.log('🔄 Clic sur "Ajouter la recette"');
+    console.log('  extractedRecipe:', extractedRecipe);
+    console.log('  onRecipeExtracted callback:', typeof onRecipeExtracted);
+    
     if (extractedRecipe) {
-      onRecipeExtracted(extractedRecipe);
-      resetForm();
+      try {
+        onRecipeExtracted(extractedRecipe);
+        console.log('✅ Callback onRecipeExtracted appelé');
+        resetForm();
+      } catch (err) {
+        console.error('❌ Erreur lors de l\'appel au callback:', err);
+      }
+    } else {
+      console.warn('⚠️ Pas de recette extraite à ajouter');
     }
   };
 

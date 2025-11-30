@@ -258,22 +258,34 @@ export default function RecipeManager() {
 
   // Traiter une recette extraite du scanner
   const handleRecipeExtracted = async (extractedRecipe) => {
-    const newRecipe = {
-      id: Date.now(),
-      name: extractedRecipe.name,
-      ingredients: extractedRecipe.ingredients || [],
-      steps: extractedRecipe.steps || [],
-      servings: extractedRecipe.servings || '',
-      cookTime: extractedRecipe.cookTime || '',
-      prepTime: extractedRecipe.prepTime || '',
-      difficulty: extractedRecipe.difficulty || '',
-      createdAt: new Date().toISOString()
-    };
+    try {
+      console.log('📝 Recette extraite reçue:', extractedRecipe);
+      
+      const newRecipe = {
+        id: Date.now(),
+        name: extractedRecipe.name,
+        ingredients: extractedRecipe.ingredients || [],
+        steps: extractedRecipe.steps || [],
+        servings: extractedRecipe.servings || '',
+        cookTime: extractedRecipe.cookTime || '',
+        prepTime: extractedRecipe.prepTime || '',
+        difficulty: extractedRecipe.difficulty || '',
+        createdAt: new Date().toISOString()
+      };
 
-    await saveRecipes([...recipes, newRecipe]);
-    setShowScanner(false);
-    setCurrentPage('search');
-    alert('Recette ajoutée avec succès !');
+      console.log('💾 Sauvegarde de la recette:', newRecipe);
+      
+      await saveRecipes([...recipes, newRecipe]);
+      
+      console.log('✅ Recette sauvegardée avec succès!');
+      
+      setShowScanner(false);
+      setCurrentPage('search');
+      alert('Recette ajoutée avec succès ! 🎉');
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'ajout de la recette:', error);
+      alert('Erreur: ' + (error.message || 'Impossible d\'ajouter la recette'));
+    }
   };
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
