@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Camera, Upload, Loader, X, AlertCircle } from 'lucide-react';
+import { GOOGLE_API_KEY } from './config.js';
 
 export default function RecipeScanner({ onRecipeExtracted, onClose }) {
   const [image, setImage] = useState(null);
@@ -9,16 +10,14 @@ export default function RecipeScanner({ onRecipeExtracted, onClose }) {
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
-  // Obtenir la clé API (avec fallback)
+  // Obtenir la clé API (depuis config.js)
   const getApiKey = () => {
-    const key = import.meta.env.VITE_GOOGLE_API_KEY;
-    console.log('DEBUG: VITE_GOOGLE_API_KEY =', key ? '✓ Chargée' : '✗ Non définie');
-    console.log('DEBUG: All env vars:', Object.keys(import.meta.env).filter(k => k.includes('VITE')));
-    if (!key) {
-      console.error('VITE_GOOGLE_API_KEY non configurée');
-      throw new Error('Clé API Google non configurée');
+    if (!GOOGLE_API_KEY) {
+      console.error('❌ GOOGLE_API_KEY non disponible');
+      throw new Error('Clé API Google non configurée. Vérifiez les variables d\'environnement Vercel.');
     }
-    return key;
+    console.log('✓ GOOGLE_API_KEY chargée depuis config.js');
+    return GOOGLE_API_KEY;
   };
 
   const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
