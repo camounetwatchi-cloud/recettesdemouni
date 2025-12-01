@@ -6,12 +6,28 @@ import {
   doc, 
   updateDoc,
   onSnapshot,
-  query
+  query,
+  getDoc,
+  enableNetwork,
+  disableNetwork
 } from 'firebase/firestore';
 import { db } from '../firebase';
 
 // Collection Firestore pour les recettes
 const RECIPES_COLLECTION = 'recipes';
+
+// Fonction pour vérifier la connectivité réseau Firestore
+const checkFirestoreConnection = async () => {
+  try {
+    // Forcer la reconnexion réseau
+    await enableNetwork(db);
+    console.log('🌐 Firebase: Réseau activé');
+    return true;
+  } catch (error) {
+    console.error('❌ Firebase: Erreur réseau:', error);
+    return false;
+  }
+};
 
 // Récupérer toutes les recettes
 export const getRecipes = async () => {
@@ -21,11 +37,15 @@ export const getRecipes = async () => {
     console.log('🔥 Firebase: DB instance:', db ? '✓ OK' : '✗ NULL');
     console.log('🔥 Firebase: Project ID:', db?.app?.options?.projectId || 'INCONNU');
     
+    // Vérifier la connexion
+    await checkFirestoreConnection();
+    
     const colRef = collection(db, RECIPES_COLLECTION);
     console.log('🔥 Firebase: Collection reference créée');
     
     const querySnapshot = await getDocs(colRef);
     console.log('🔥 Firebase: Query exécutée, docs:', querySnapshot.size);
+    console.log('🔥 Firebase: Source des données:', querySnapshot.metadata.fromCache ? 'CACHE' : 'SERVEUR');
     
     const recipes = [];
     querySnapshot.forEach((doc) => {
@@ -78,6 +98,9 @@ export const saveRecipe = async (recipe) => {
     console.log('🔥 Firebase: Données à sauvegarder:', JSON.stringify(recipe).substring(0, 200));
     console.log('🔥 Firebase: Project ID utilisé:', db.app.options.projectId);
     
+    // Forcer la connexion réseau avant d'écrire
+    await checkFirestoreConnection();
+    
     const docRef = doc(db, RECIPES_COLLECTION, recipeId);
     console.log('🔥 Firebase: Document reference créée pour path:', docRef.path);
     
@@ -96,10 +119,12 @@ export const saveRecipe = async (recipe) => {
     
     // Vérification immédiate - relire le document
     console.log('🔍 Firebase: Vérification - lecture du document...');
-    const { getDoc } = await import('firebase/firestore');
     const savedDoc = await getDoc(docRef);
+    
+    console.log('🔍 Firebase: Source de vérification:', savedDoc.metadata.fromCache ? 'CACHE (pas encore sur serveur!)' : 'SERVEUR (confirmé!)');
+    
     if (savedDoc.exists()) {
-      console.log('✅ Firebase: Document vérifié, il EXISTE dans Firestore');
+      console.log('✅ Firebase: Document vérifié, il EXISTE');
       console.log('🔥 Firebase: Données lues:', JSON.stringify(savedDoc.data()).substring(0, 100));
     } else {
       console.error('❌ Firebase: PROBLÈME - Le document N\'EXISTE PAS après sauvegarde!');

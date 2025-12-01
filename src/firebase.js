@@ -1,6 +1,6 @@
 // Configuration Firebase pour le côté client (React)
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 
 // Configuration Firebase - utilise les variables d'environnement
 const firebaseConfig = {
@@ -12,10 +12,23 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
+console.log('🔥 Firebase Config:', {
+  projectId: firebaseConfig.projectId,
+  authDomain: firebaseConfig.authDomain,
+  hasApiKey: !!firebaseConfig.apiKey
+});
+
 // Initialiser Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialiser Firestore
-export const db = getFirestore(app);
+// Initialiser Firestore avec configuration explicite
+// Utilise le cache persistant avec support multi-onglets
+export const db = initializeFirestore(app, {
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager()
+  })
+});
+
+console.log('✅ Firebase initialisé avec Firestore');
 
 export default app;

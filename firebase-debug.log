@@ -1,0 +1,62 @@
+[debug] [2025-12-01T00:29:18.884Z] ----------------------------------------------------------------------
+[debug] [2025-12-01T00:29:18.886Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\natha\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only firestore:rules --project recettesdemounie --debug
+[debug] [2025-12-01T00:29:18.886Z] CLI Version:   14.26.0
+[debug] [2025-12-01T00:29:18.886Z] Platform:      win32
+[debug] [2025-12-01T00:29:18.886Z] Node Version:  v22.20.0
+[debug] [2025-12-01T00:29:18.886Z] Time:          Mon Dec 01 2025 01:29:18 GMT+0100 (heure normale d’Europe centrale)
+[debug] [2025-12-01T00:29:18.887Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-12-01T00:29:19.024Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-12-01T00:29:19.024Z] > authorizing via signed-in user (lawatchcod@gmail.com)
+[debug] [2025-12-01T00:29:19.025Z] [iam] checking project recettesdemounie for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2025-12-01T00:29:19.026Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:19.026Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:19.027Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/recettesdemounie:testIamPermissions [none]
+[debug] [2025-12-01T00:29:19.027Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/recettesdemounie:testIamPermissions x-goog-quota-user=projects/recettesdemounie
+[debug] [2025-12-01T00:29:19.027Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/recettesdemounie:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[debug] [2025-12-01T00:29:19.645Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/recettesdemounie:testIamPermissions 200
+[debug] [2025-12-01T00:29:19.645Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/recettesdemounie:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]}
+[info] 
+[info] === Deploying to 'recettesdemounie'...
+[info] 
+[info] i  deploying firestore 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[info] i  firestore: ensuring required API firestore.googleapis.com is enabled... 
+[debug] [2025-12-01T00:29:19.647Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:19.647Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:19.647Z] >>> [apiv2][query] GET https://firestore.googleapis.com/v1/projects/recettesdemounie/databases/default [none]
+[debug] [2025-12-01T00:29:19.720Z] <<< [apiv2][status] GET https://firestore.googleapis.com/v1/projects/recettesdemounie/databases/default 200
+[debug] [2025-12-01T00:29:19.720Z] <<< [apiv2][body] GET https://firestore.googleapis.com/v1/projects/recettesdemounie/databases/default {"name":"projects/recettesdemounie/databases/default","uid":"4f751262-67f0-4be6-97bb-3108de08b8ab","createTime":"2025-12-01T00:11:55.633553Z","updateTime":"2025-12-01T00:11:55.633553Z","locationId":"europe-west1","type":"FIRESTORE_NATIVE","concurrencyMode":"PESSIMISTIC","versionRetentionPeriod":"3600s","earliestVersionTime":"2025-12-01T00:11:55.633553Z","appEngineIntegrationMode":"DISABLED","pointInTimeRecoveryEnablement":"POINT_IN_TIME_RECOVERY_DISABLED","deleteProtectionState":"DELETE_PROTECTION_DISABLED","databaseEdition":"STANDARD","freeTier":true,"realtimeUpdatesMode":"REALTIME_UPDATES_MODE_ENABLED","etag":"IMCTvI+Rm5EDMJGnzZ2Nm5ED"}
+[info] i  firestore: reading indexes from firestore.indexes.json... 
+[info] i  cloud.firestore: checking firestore.rules for compilation errors... 
+[debug] [2025-12-01T00:29:19.722Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:19.722Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:19.722Z] >>> [apiv2][query] POST https://firebaserules.googleapis.com/v1/projects/recettesdemounie:test [none]
+[debug] [2025-12-01T00:29:19.722Z] >>> [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/recettesdemounie:test [omitted]
+[debug] [2025-12-01T00:29:20.395Z] <<< [apiv2][status] POST https://firebaserules.googleapis.com/v1/projects/recettesdemounie:test 200
+[debug] [2025-12-01T00:29:20.395Z] <<< [apiv2][body] POST https://firebaserules.googleapis.com/v1/projects/recettesdemounie:test {}
+[info] +  cloud.firestore: rules file firestore.rules compiled successfully 
+[debug] [2025-12-01T00:29:20.397Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:20.397Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:20.397Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/recettesdemounie/releases pageSize=10&pageToken=
+[debug] [2025-12-01T00:29:20.659Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/recettesdemounie/releases 200
+[debug] [2025-12-01T00:29:20.659Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/recettesdemounie/releases {"releases":[{"name":"projects/recettesdemounie/releases/cloud.firestore/default","rulesetName":"projects/recettesdemounie/rulesets/33c7540d-9e1a-415c-a001-2680f8a20998","createTime":"2025-11-30T19:29:06.037204Z","updateTime":"2025-12-01T00:12:30.085575Z"}]}
+[debug] [2025-12-01T00:29:20.659Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:20.659Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:20.659Z] >>> [apiv2][query] GET https://firebaserules.googleapis.com/v1/projects/recettesdemounie/rulesets/33c7540d-9e1a-415c-a001-2680f8a20998 [none]
+[debug] [2025-12-01T00:29:21.279Z] <<< [apiv2][status] GET https://firebaserules.googleapis.com/v1/projects/recettesdemounie/rulesets/33c7540d-9e1a-415c-a001-2680f8a20998 200
+[debug] [2025-12-01T00:29:21.280Z] <<< [apiv2][body] GET https://firebaserules.googleapis.com/v1/projects/recettesdemounie/rulesets/33c7540d-9e1a-415c-a001-2680f8a20998 [omitted]
+[info] i  firestore: latest version of firestore.rules already up to date, skipping upload... 
+[debug] [2025-12-01T00:29:21.281Z] [rules] releasing cloud.firestore/default with ruleset projects/recettesdemounie/rulesets/33c7540d-9e1a-415c-a001-2680f8a20998
+[debug] [2025-12-01T00:29:21.281Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:21.281Z] Checked if tokens are valid: true, expires at: 1764552523907
+[debug] [2025-12-01T00:29:21.281Z] >>> [apiv2][query] PATCH https://firebaserules.googleapis.com/v1/projects/recettesdemounie/releases/cloud.firestore/default [none]
+[debug] [2025-12-01T00:29:21.281Z] >>> [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/recettesdemounie/releases/cloud.firestore/default {"release":{"name":"projects/recettesdemounie/releases/cloud.firestore/default","rulesetName":"projects/recettesdemounie/rulesets/33c7540d-9e1a-415c-a001-2680f8a20998"}}
+[debug] [2025-12-01T00:29:22.054Z] <<< [apiv2][status] PATCH https://firebaserules.googleapis.com/v1/projects/recettesdemounie/releases/cloud.firestore/default 200
+[debug] [2025-12-01T00:29:22.054Z] <<< [apiv2][body] PATCH https://firebaserules.googleapis.com/v1/projects/recettesdemounie/releases/cloud.firestore/default {"name":"projects/recettesdemounie/releases/cloud.firestore/default","rulesetName":"projects/recettesdemounie/rulesets/33c7540d-9e1a-415c-a001-2680f8a20998","createTime":"2025-11-30T19:29:06.037204Z","updateTime":"2025-12-01T00:29:21.999895Z"}
+[debug] [2025-12-01T00:29:22.054Z] [rules] updated release projects/recettesdemounie/releases/cloud.firestore/default
+[info] +  firestore: released rules firestore.rules to cloud.firestore 
+[info] 
+[info] +  Deploy complete! 
+[info] 
+[info] Project Console: https://console.firebase.google.com/project/recettesdemounie/overview
