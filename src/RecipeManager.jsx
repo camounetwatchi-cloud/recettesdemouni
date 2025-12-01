@@ -300,7 +300,7 @@ export default function RecipeManager() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-50 to-amber-50/30">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-rose-50">
       {/* Navbar - Sticky avec effet glassmorphism */}
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl shadow-sm border-b border-stone-200/60">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -342,7 +342,7 @@ export default function RecipeManager() {
                 className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-medium transition-all duration-200 flex items-center gap-2 ${
                   currentPage === 'search'
                     ? 'bg-amber-700 text-white shadow-sm hover:bg-amber-800'
-                    : 'border border-stone-300 text-stone-600 hover:border-amber-700 hover:text-amber-800 hover:bg-amber-50/50'
+                    : 'border border-stone-300 text-stone-600 hover:border-orange-400 hover:text-amber-800 hover:bg-orange-50'
                 }`}
               >
                 <Search size={18} />
@@ -462,13 +462,13 @@ export default function RecipeManager() {
       <div className="max-w-6xl mx-auto px-4 py-4 md:py-8">
         {currentPage === 'view' && selectedRecipe ? (
           /* Vue détaillée d'une recette */
-          <div className="bg-white rounded-xl shadow-sm p-8 border border-stone-200/60">
+          <div className="bg-gradient-to-br from-white to-orange-50/30 rounded-xl shadow-sm p-8 border border-orange-200/40">
             <button
               onClick={() => {
                 setCurrentPage('search');
                 setSelectedRecipe(null);
               }}
-              className="mb-6 px-4 py-2 text-amber-800 hover:bg-stone-100 rounded-lg transition-colors font-medium"
+              className="mb-6 px-4 py-2 text-amber-800 hover:bg-orange-100 rounded-lg transition-colors font-medium"
             >
               ← Retour aux recettes
             </button>
@@ -542,7 +542,7 @@ export default function RecipeManager() {
 
             {/* Tips & Astuces */}
             {selectedRecipe.tips && selectedRecipe.tips.length > 0 ? (
-              <div className="bg-amber-50/50 border border-amber-200/60 rounded-xl p-6">
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-orange-200/60 rounded-xl p-6">
                 <h2 className="text-xl font-semibold text-amber-800 mb-4">
                   Tips & Astuces
                 </h2>
@@ -608,7 +608,7 @@ export default function RecipeManager() {
                     <div
                       key={`recipe-${recipe.id}-${idx}`}
                       onClick={() => handleOpenRecipe(recipe)}
-                      className="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-4 transition-all duration-200 relative cursor-pointer border border-stone-200/60 hover:-translate-y-0.5"
+                      className="bg-gradient-to-br from-white to-orange-50/20 rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(217,119,6,0.15)] p-4 transition-all duration-200 relative cursor-pointer border border-orange-200/40 hover:border-orange-300/60 hover:-translate-y-0.5"
                     >
                       {/* Menu 3 points */}
                       <div className="absolute top-3 right-3 z-10">
@@ -617,7 +617,7 @@ export default function RecipeManager() {
                             e.stopPropagation();
                             setShowMenu(showMenu === recipe.id ? null : recipe.id);
                           }}
-                          className="p-1.5 hover:bg-stone-100 rounded-full transition-colors"
+                          className="p-1.5 hover:bg-orange-100 rounded-full transition-colors"
                         >
                           <MoreVertical size={18} className="text-stone-400" />
                         </button>
@@ -672,7 +672,7 @@ export default function RecipeManager() {
             )}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="bg-gradient-to-br from-white to-orange-50/30 rounded-lg shadow-md p-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
               {editingRecipe ? 'Mettre à jour la recette' : 'Enregistrer la recette'}
             </h2>

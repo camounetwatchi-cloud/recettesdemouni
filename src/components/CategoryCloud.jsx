@@ -22,9 +22,9 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 mb-8 border border-stone-200/60">
+    <div className="bg-gradient-to-br from-white to-orange-50/50 rounded-2xl shadow-sm p-6 md:p-8 mb-8 border border-orange-200/40">
       {/* Titre au-dessus */}
-      <h3 className="text-center text-lg md:text-xl font-semibold text-stone-700 mb-6 tracking-tight">
+      <h3 className="text-center text-lg md:text-xl font-semibold text-amber-900 mb-6 tracking-tight">
         Une envie particulière ?
       </h3>
       
@@ -70,12 +70,12 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
 
         {/* Séparateur subtil */}
         <div className="w-full max-w-lg my-4">
-          <div className="h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-orange-200 to-transparent"></div>
         </div>
 
-        {/* Barre de recherche - Cadre net et distinct */}
+        {/* Barre de recherche - Cadre net et distinct */}}
         <div className="w-full max-w-md">
-          <div className="bg-stone-50 rounded-2xl shadow-sm p-4 border border-stone-200">
+          <div className="bg-orange-50/50 rounded-2xl shadow-sm p-4 border border-orange-200/60">
             <div className="flex gap-2 w-full">
               <input
                 type="text"
@@ -83,11 +83,11 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && onSearch && onSearch(searchTerm)}
                 placeholder="Rechercher une recette..."
-                className="flex-1 px-4 py-2.5 bg-white border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-700/30 focus:border-amber-700/50 text-sm md:text-base font-medium placeholder:text-stone-400"
+                className="flex-1 px-4 py-2.5 bg-white border border-orange-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400/40 focus:border-orange-400 text-sm md:text-base font-medium placeholder:text-stone-400"
               />
               <button
                 onClick={() => onSearch && onSearch(searchTerm)}
-                className="px-5 py-2.5 bg-amber-700 text-white rounded-xl hover:bg-amber-800 transition-all shadow-sm hover:shadow font-medium"
+                className="px-5 py-2.5 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-xl hover:from-amber-700 hover:to-orange-700 transition-all shadow-sm hover:shadow font-medium"
               >
                 <Search size={20} />
               </button>
@@ -97,7 +97,7 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
 
         {/* Séparateur subtil */}
         <div className="w-full max-w-lg my-4">
-          <div className="h-px bg-gradient-to-r from-transparent via-stone-200 to-transparent"></div>
+          <div className="h-px bg-gradient-to-r from-transparent via-orange-200 to-transparent"></div>
         </div>
 
         {/* BAS - 3, 6, 10 éléments (inverse du haut) */}
@@ -144,14 +144,14 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
 
 // Composant pour afficher une étiquette de catégorie - Style pilule amélioré
 function CategoryTag({ category, idx, onClick }) {
-  // Palette douce et sophistiquée - gris chauds, beiges, touches d'orange brûlé
+  // Palette chaude et accueillante - orange, ambre, pêche
   const colors = [
-    'bg-stone-100 text-stone-600 hover:bg-stone-200 border-stone-200',
-    'bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200',
-    'bg-orange-50 text-orange-800 hover:bg-orange-100 border-orange-200',
-    'bg-stone-50 text-stone-700 hover:bg-stone-100 border-stone-200',
-    'bg-amber-100/70 text-amber-700 hover:bg-amber-100 border-amber-200',
-    'bg-warm-gray-100 text-stone-600 hover:bg-stone-200 border-stone-200',
+    'bg-orange-100 text-orange-700 hover:bg-orange-200 border-orange-200',
+    'bg-amber-100 text-amber-800 hover:bg-amber-200 border-amber-200',
+    'bg-rose-50 text-rose-700 hover:bg-rose-100 border-rose-200',
+    'bg-orange-50 text-orange-600 hover:bg-orange-100 border-orange-200',
+    'bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-200',
+    'bg-yellow-50 text-yellow-700 hover:bg-yellow-100 border-yellow-200',
   ];
   
   const sizeClasses = [
