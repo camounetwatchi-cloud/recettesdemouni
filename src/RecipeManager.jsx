@@ -575,7 +575,7 @@ export default function RecipeManager() {
                     </button>
                   )}
                 </div>
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   {[...recipes]
                     .filter(recipe => {
                       if (!searchTerm.trim()) return true;
@@ -590,31 +590,31 @@ export default function RecipeManager() {
                     <div
                       key={`recipe-${recipe.id}-${idx}`}
                       onClick={() => handleOpenRecipe(recipe)}
-                      className="bg-white rounded-lg shadow-md p-5 hover:shadow-lg transition-shadow relative cursor-pointer"
+                      className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] p-4 transition-all duration-300 relative cursor-pointer border border-gray-100/80 hover:-translate-y-0.5"
                     >
                       {/* Menu 3 points */}
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-3 right-3 z-10">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setShowMenu(showMenu === recipe.id ? null : recipe.id);
                           }}
-                          className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                          className="p-1.5 hover:bg-gray-50 rounded-full transition-colors"
                         >
-                          <MoreVertical size={20} className="text-gray-500" />
+                          <MoreVertical size={18} className="text-gray-400" />
                         </button>
                         
                         {showMenu === recipe.id && (
-                          <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                          <div className="absolute right-0 mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 z-20">
                             <button
                               onClick={() => handleEditRecipe(recipe)}
-                              className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700 rounded-t-lg"
+                              className="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-600 text-sm rounded-t-lg"
                             >
                               Modifier
                             </button>
                             <button
                               onClick={() => handleDeleteRecipe(recipe.id)}
-                              className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 rounded-b-lg"
+                              className="w-full text-left px-3 py-2 hover:bg-red-50 text-red-500 text-sm rounded-b-lg"
                             >
                               Supprimer
                             </button>
@@ -622,18 +622,30 @@ export default function RecipeManager() {
                         )}
                       </div>
 
-                      <h3 className="text-xl font-bold text-orange-600 mb-3 pr-8">
+                      {/* Titre de la recette */}
+                      <h3 className="text-lg font-bold text-orange-500 pr-8 leading-tight tracking-tight">
                         {recipe.name}
                       </h3>
-                      <div>
-                        <h4 className="font-semibold text-gray-700 mb-2">Ingrédients:</h4>
-                        <ul className="space-y-1">
-                          {recipe.ingredients.map((ing, idx) => (
-                            <li key={idx} className="text-gray-600 text-sm">
-                              • {ing.name}: {ing.quantity}
-                            </li>
-                          ))}
-                        </ul>
+                      
+                      {/* Séparateur fin */}
+                      <div className="h-px bg-gray-100 my-2.5"></div>
+                      
+                      {/* Ingrédients en 2 colonnes */}
+                      <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
+                        {recipe.ingredients.slice(0, 8).map((ing, idx) => (
+                          <div key={idx} className="flex items-start gap-1.5 text-xs text-gray-600 leading-relaxed">
+                            <span className="text-gray-300 mt-0.5">•</span>
+                            <span className="truncate">
+                              <span className="font-medium text-gray-700">{ing.name}</span>
+                              {ing.quantity && <span className="text-gray-400"> {ing.quantity}</span>}
+                            </span>
+                          </div>
+                        ))}
+                        {recipe.ingredients.length > 8 && (
+                          <div className="col-span-2 text-xs text-gray-400 mt-1">
+                            +{recipe.ingredients.length - 8} autres...
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
