@@ -17,9 +17,18 @@ const RECIPES_COLLECTION = 'recipes';
 export const getRecipes = async () => {
   try {
     console.log('🔥 Firebase: Chargement initial des recettes...');
-    const querySnapshot = await getDocs(collection(db, RECIPES_COLLECTION));
+    console.log('🔥 Firebase: Collection:', RECIPES_COLLECTION);
+    console.log('🔥 Firebase: DB instance:', db ? '✓ OK' : '✗ NULL');
+    
+    const colRef = collection(db, RECIPES_COLLECTION);
+    console.log('🔥 Firebase: Collection reference créée');
+    
+    const querySnapshot = await getDocs(colRef);
+    console.log('🔥 Firebase: Query exécutée, docs:', querySnapshot.size);
+    
     const recipes = [];
     querySnapshot.forEach((doc) => {
+      console.log('🔥 Firebase: Document trouvé:', doc.id);
       recipes.push({
         id: doc.id,
         ...doc.data()
@@ -29,6 +38,8 @@ export const getRecipes = async () => {
     return recipes;
   } catch (error) {
     console.error('❌ Firebase: Erreur lors de la récupération des recettes:', error);
+    console.error('❌ Firebase: Code erreur:', error.code);
+    console.error('❌ Firebase: Message:', error.message);
     return [];
   }
 };
@@ -63,14 +74,22 @@ export const saveRecipe = async (recipe) => {
   try {
     const recipeId = recipe.id.toString();
     console.log('🔥 Firebase: Sauvegarde de la recette ID', recipeId);
-    await setDoc(doc(db, RECIPES_COLLECTION, recipeId), {
+    console.log('🔥 Firebase: Données à sauvegarder:', JSON.stringify(recipe).substring(0, 200));
+    
+    const docRef = doc(db, RECIPES_COLLECTION, recipeId);
+    console.log('🔥 Firebase: Document reference créée');
+    
+    await setDoc(docRef, {
       ...recipe,
       updatedAt: new Date().toISOString()
     });
+    
     console.log('✅ Firebase: Recette sauvegardée avec succès');
     return true;
   } catch (error) {
     console.error('❌ Firebase: Erreur lors de la sauvegarde de la recette:', error);
+    console.error('❌ Firebase: Code erreur:', error.code);
+    console.error('❌ Firebase: Message:', error.message);
     throw error;
   }
 };
