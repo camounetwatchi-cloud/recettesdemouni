@@ -19,6 +19,7 @@ export const getRecipes = async () => {
     console.log('🔥 Firebase: Chargement initial des recettes...');
     console.log('🔥 Firebase: Collection:', RECIPES_COLLECTION);
     console.log('🔥 Firebase: DB instance:', db ? '✓ OK' : '✗ NULL');
+    console.log('🔥 Firebase: Project ID:', db?.app?.options?.projectId || 'INCONNU');
     
     const colRef = collection(db, RECIPES_COLLECTION);
     console.log('🔥 Firebase: Collection reference créée');
@@ -75,21 +76,41 @@ export const saveRecipe = async (recipe) => {
     const recipeId = recipe.id.toString();
     console.log('🔥 Firebase: Sauvegarde de la recette ID', recipeId);
     console.log('🔥 Firebase: Données à sauvegarder:', JSON.stringify(recipe).substring(0, 200));
+    console.log('🔥 Firebase: Project ID utilisé:', db.app.options.projectId);
     
     const docRef = doc(db, RECIPES_COLLECTION, recipeId);
-    console.log('🔥 Firebase: Document reference créée');
+    console.log('🔥 Firebase: Document reference créée pour path:', docRef.path);
     
-    await setDoc(docRef, {
+    const dataToSave = {
       ...recipe,
       updatedAt: new Date().toISOString()
-    });
+    };
     
-    console.log('✅ Firebase: Recette sauvegardée avec succès');
+    console.log('🔥 Firebase: Appel setDoc en cours...');
+    const startTime = Date.now();
+    
+    await setDoc(docRef, dataToSave);
+    
+    const endTime = Date.now();
+    console.log(`✅ Firebase: Recette sauvegardée avec succès en ${endTime - startTime}ms`);
+    
+    // Vérification immédiate - relire le document
+    console.log('🔍 Firebase: Vérification - lecture du document...');
+    const { getDoc } = await import('firebase/firestore');
+    const savedDoc = await getDoc(docRef);
+    if (savedDoc.exists()) {
+      console.log('✅ Firebase: Document vérifié, il EXISTE dans Firestore');
+      console.log('🔥 Firebase: Données lues:', JSON.stringify(savedDoc.data()).substring(0, 100));
+    } else {
+      console.error('❌ Firebase: PROBLÈME - Le document N\'EXISTE PAS après sauvegarde!');
+    }
+    
     return true;
   } catch (error) {
     console.error('❌ Firebase: Erreur lors de la sauvegarde de la recette:', error);
     console.error('❌ Firebase: Code erreur:', error.code);
     console.error('❌ Firebase: Message:', error.message);
+    console.error('❌ Firebase: Stack:', error.stack);
     throw error;
   }
 };
