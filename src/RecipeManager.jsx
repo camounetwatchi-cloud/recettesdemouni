@@ -453,7 +453,7 @@ export default function RecipeManager() {
       <div className="bg-stone-100/50 border-b border-stone-200/50">
         <div className="max-w-6xl mx-auto px-4 py-2 text-center">
           <span className="text-sm md:text-base text-stone-600 font-medium">
-            Chef Mounie, c'est plus de <span className="font-semibold text-amber-800">{recipes.length}</span> recette{recipes.length > 1 ? 's' : ''}
+            Chef Mounie, c'est plus de <span className="font-semibold text-amber-800">{recipes.length}</span> recette{recipes.length > 1 ? 's' : ''} maîtrisée{recipes.length > 1 ? 's' : ''}
           </span>
         </div>
       </div>

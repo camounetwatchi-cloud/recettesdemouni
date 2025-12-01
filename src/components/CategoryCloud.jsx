@@ -38,7 +38,7 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
             <CategoryTag 
               key={`t1-${category.name}-${idx}`}
               category={category}
-              idx={idx}
+              lineNumber={1}
               onClick={() => handleCategoryClick(category.name)}
             />
           ))}
@@ -50,7 +50,7 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
             <CategoryTag 
               key={`t2-${category.name}-${idx}`}
               category={category}
-              idx={idx + 10}
+              lineNumber={2}
               onClick={() => handleCategoryClick(category.name)}
             />
           ))}
@@ -62,7 +62,7 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
             <CategoryTag 
               key={`t3-${category.name}-${idx}`}
               category={category}
-              idx={idx + 16}
+              lineNumber={3}
               onClick={() => handleCategoryClick(category.name)}
             />
           ))}
@@ -108,7 +108,7 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
             <CategoryTag 
               key={`b1-${category.name}-${idx}`}
               category={category}
-              idx={idx + 19}
+              lineNumber={3}
               onClick={() => handleCategoryClick(category.name)}
             />
           ))}
@@ -120,7 +120,7 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
             <CategoryTag 
               key={`b2-${category.name}-${idx}`}
               category={category}
-              idx={idx + 22}
+              lineNumber={2}
               onClick={() => handleCategoryClick(category.name)}
             />
           ))}
@@ -132,7 +132,7 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
             <CategoryTag 
               key={`b3-${category.name}-${idx}`}
               category={category}
-              idx={idx + 28}
+              lineNumber={1}
               onClick={() => handleCategoryClick(category.name)}
             />
           ))}
@@ -143,16 +143,14 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
 }
 
 // Composant pour afficher une étiquette de catégorie - Style pilule amélioré
-function CategoryTag({ category, idx, onClick }) {
-  // Palette chaude et accueillante - orange, ambre, pêche
-  const colors = [
-    'bg-orange-100 text-orange-700 hover:bg-orange-200 border-orange-200',
-    'bg-amber-100 text-amber-800 hover:bg-amber-200 border-amber-200',
-    'bg-rose-50 text-rose-700 hover:bg-rose-100 border-rose-200',
-    'bg-orange-50 text-orange-600 hover:bg-orange-100 border-orange-200',
-    'bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-200',
-    'bg-yellow-50 text-yellow-700 hover:bg-yellow-100 border-yellow-200',
-  ];
+function CategoryTag({ category, lineNumber, onClick }) {
+  // Couleurs par ligne avec dégradé symétrique autour de la barre de recherche
+  // Ligne 1: orange vif, Ligne 2: ambre, Ligne 3: pêche clair
+  const lineColors = {
+    1: 'bg-orange-200 text-orange-800 hover:bg-orange-300 border-orange-300',
+    2: 'bg-amber-100 text-amber-800 hover:bg-amber-200 border-amber-200',
+    3: 'bg-orange-50 text-orange-700 hover:bg-orange-100 border-orange-200',
+  };
   
   const sizeClasses = [
     'text-xs px-3 py-1.5',
@@ -162,7 +160,7 @@ function CategoryTag({ category, idx, onClick }) {
     'text-xl px-6 py-2.5 font-bold',
   ];
 
-  const colorClass = colors[idx % colors.length];
+  const colorClass = lineColors[lineNumber] || lineColors[1];
 
   return (
     <button
