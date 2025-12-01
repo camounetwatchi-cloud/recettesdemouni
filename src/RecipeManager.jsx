@@ -540,11 +540,29 @@ export default function RecipeManager() {
               </ol>
             </div>
 
-            {/* Tips - Section vide pour l'instant */}
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Tips & Astuces</h2>
-              <p className="text-gray-500 italic">Cette section sera ajoutée plus tard...</p>
-            </div>
+            {/* Tips & Astuces */}
+            {selectedRecipe.tips && selectedRecipe.tips.length > 0 ? (
+              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6">
+                <h2 className="text-2xl font-bold text-amber-700 mb-4 flex items-center gap-2">
+                  <span>💡</span> Tips & Astuces
+                </h2>
+                <ul className="space-y-3">
+                  {selectedRecipe.tips.map((tip, idx) => (
+                    <li key={idx} className="flex gap-3 text-gray-700">
+                      <span className="text-amber-500 font-bold">•</span>
+                      <p className="text-base leading-relaxed">{tip}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 bg-gray-50/50">
+                <h2 className="text-xl font-semibold text-gray-400 mb-2 flex items-center gap-2">
+                  <span>💡</span> Tips & Astuces
+                </h2>
+                <p className="text-gray-400 italic text-sm">Aucune astuce pour cette recette.</p>
+              </div>
+            )}
           </div>
         ) : currentPage === 'search' ? (
           <div>
