@@ -302,24 +302,27 @@ export default function RecipeManager() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
       {/* Navbar - Sticky avec effet glassmorphism */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg shadow-lg border-b border-white/20">
+      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl shadow-xl border-b border-orange-100">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16 md:h-18">
-            {/* Logo */}
+          <div className="flex items-center justify-between h-18 md:h-20">
+            {/* Logo - Plus grand et plus net */}
             <button
               onClick={() => {
                 setCurrentPage('search');
                 setSelectedRecipe(null);
               }}
-              className="flex items-center gap-2 md:gap-3 text-orange-600 hover:scale-105 transition-all duration-300 cursor-pointer group"
+              className="flex items-center gap-3 md:gap-4 text-orange-600 hover:scale-105 transition-all duration-300 cursor-pointer group"
             >
-              <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl shadow-md group-hover:shadow-lg transition-shadow">
-                <ChefHat size={20} className="md:w-6 md:h-6 text-white" />
+              <div className="p-2.5 md:p-3 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl shadow-lg group-hover:shadow-xl transition-all ring-2 ring-orange-200">
+                <ChefHat size={24} className="md:w-8 md:h-8 text-white drop-shadow-sm" />
               </div>
-              <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent hidden sm:inline">
-                Recettes de Mounie
-              </span>
-              <span className="text-base font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent sm:hidden">
+              <div className="hidden sm:flex flex-col">
+                <span className="text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+                  Recettes de Mounie
+                </span>
+                <span className="text-xs text-orange-400 font-medium -mt-0.5">Le cahier de famille</span>
+              </div>
+              <span className="text-lg font-extrabold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent sm:hidden">
                 Mounie
               </span>
             </button>
