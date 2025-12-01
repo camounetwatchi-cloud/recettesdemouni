@@ -300,9 +300,9 @@ export default function RecipeManager() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
+    <div className="min-h-screen bg-gradient-to-br from-stone-50 to-amber-50/30">
       {/* Navbar - Sticky avec effet glassmorphism */}
-      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl shadow-xl border-b border-orange-100">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl shadow-sm border-b border-stone-200/60">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-18 md:h-20">
             {/* Logo - Plus grand et plus net */}
@@ -311,18 +311,18 @@ export default function RecipeManager() {
                 setCurrentPage('search');
                 setSelectedRecipe(null);
               }}
-              className="flex items-center gap-3 md:gap-4 text-orange-600 hover:scale-105 transition-all duration-300 cursor-pointer group"
+              className="flex items-center gap-3 md:gap-4 text-amber-800 hover:scale-105 transition-all duration-300 cursor-pointer group"
             >
-              <div className="p-2.5 md:p-3 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl shadow-lg group-hover:shadow-xl transition-all ring-2 ring-orange-200">
-                <ChefHat size={24} className="md:w-8 md:h-8 text-white drop-shadow-sm" />
+              <div className="p-2.5 md:p-3 bg-gradient-to-br from-amber-700 to-amber-800 rounded-2xl shadow-md group-hover:shadow-lg transition-all">
+                <ChefHat size={24} className="md:w-8 md:h-8 text-white" />
               </div>
               <div className="hidden sm:flex flex-col">
-                <span className="text-xl md:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+                <span className="text-xl md:text-2xl font-bold tracking-tight text-stone-800">
                   Recettes de Mounie
                 </span>
-                <span className="text-xs text-orange-400 font-medium -mt-0.5">Le cahier de famille</span>
+                <span className="text-xs text-stone-500 font-medium -mt-0.5">Le cahier de famille</span>
               </div>
-              <span className="text-lg font-extrabold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent sm:hidden">
+              <span className="text-lg font-bold text-stone-800 sm:hidden">
                 Mounie
               </span>
             </button>
@@ -339,10 +339,10 @@ export default function RecipeManager() {
                   setSteps(['']);
                   setSelectedRecipe(null);
                 }}
-                className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-medium transition-all duration-300 flex items-center gap-2 ${
+                className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-medium transition-all duration-200 flex items-center gap-2 ${
                   currentPage === 'search'
-                    ? 'bg-orange-500 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5'
-                    : 'border-2 border-orange-300 text-orange-600 hover:border-orange-500 hover:bg-orange-50 hover:-translate-y-0.5'
+                    ? 'bg-amber-700 text-white shadow-sm hover:bg-amber-800'
+                    : 'border border-stone-300 text-stone-600 hover:border-amber-700 hover:text-amber-800 hover:bg-amber-50/50'
                 }`}
               >
                 <Search size={18} />
@@ -352,7 +352,7 @@ export default function RecipeManager() {
               {/* Bouton Scanner - Style plein (action principale) */}
               <button
                 onClick={() => setShowScanner(true)}
-                className="px-5 lg:px-6 py-2.5 lg:py-3 rounded-full font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
+                className="px-5 lg:px-6 py-2.5 lg:py-3 rounded-full font-medium text-white bg-amber-700 hover:bg-amber-800 shadow-sm hover:shadow transition-all duration-200 flex items-center gap-2"
               >
                 <Camera size={18} />
                 <span>Scanner</span>
@@ -368,10 +368,10 @@ export default function RecipeManager() {
                   setSteps(['']);
                   setSelectedRecipe(null);
                 }}
-                className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-medium transition-all duration-300 flex items-center gap-2 ${
+                className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-medium transition-all duration-200 flex items-center gap-2 ${
                   currentPage === 'add'
-                    ? 'bg-orange-500 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5'
-                    : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50 hover:-translate-y-0.5'
+                    ? 'bg-amber-700 text-white shadow-sm hover:bg-amber-800'
+                    : 'text-stone-500 hover:text-amber-800 hover:bg-stone-100'
                 }`}
               >
                 <Plus size={18} />
@@ -382,7 +382,7 @@ export default function RecipeManager() {
             {/* Bouton Menu Mobile */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="md:hidden p-2.5 text-orange-600 hover:bg-orange-100 rounded-xl transition-colors"
+              className="md:hidden p-2.5 text-stone-600 hover:bg-stone-100 rounded-xl transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {showMobileMenu ? (
@@ -405,7 +405,7 @@ export default function RecipeManager() {
                   setShowScanner(true);
                   setShowMobileMenu(false);
                 }}
-                className="w-full px-4 py-3 rounded-full font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-500 shadow-md flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                className="w-full px-4 py-3 rounded-full font-medium text-white bg-amber-700 shadow-sm flex items-center justify-center gap-2 active:scale-95 transition-transform"
               >
                 <Camera size={20} />
                 Scanner une recette
@@ -420,8 +420,8 @@ export default function RecipeManager() {
                   }}
                   className={`flex-1 px-4 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 ${
                     currentPage === 'search'
-                      ? 'bg-orange-500 text-white shadow-md'
-                      : 'border-2 border-orange-300 text-orange-600'
+                      ? 'bg-amber-700 text-white shadow-sm'
+                      : 'border border-stone-300 text-stone-600'
                   }`}
                 >
                   <Search size={18} />
@@ -436,8 +436,8 @@ export default function RecipeManager() {
                   }}
                   className={`flex-1 px-4 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 ${
                     currentPage === 'add'
-                      ? 'bg-orange-500 text-white shadow-md'
-                      : 'text-gray-600 hover:text-orange-600 bg-gray-100'
+                      ? 'bg-amber-700 text-white shadow-sm'
+                      : 'text-stone-500 bg-stone-100'
                   }`}
                 >
                   <Plus size={18} />
@@ -450,10 +450,10 @@ export default function RecipeManager() {
       </nav>
 
       {/* Compteur de recettes - Bandeau subtil */}
-      <div className="bg-gradient-to-r from-orange-100/50 to-amber-100/50 border-b border-orange-100">
+      <div className="bg-stone-100/50 border-b border-stone-200/50">
         <div className="max-w-6xl mx-auto px-4 py-2 text-center">
-          <span className="text-sm md:text-base text-orange-700 font-medium">
-            🍳 Chef Mounie, c'est plus de <span className="font-bold text-orange-600">{recipes.length}</span> recette{recipes.length > 1 ? 's' : ''}
+          <span className="text-sm md:text-base text-stone-600 font-medium">
+            Chef Mounie, c'est plus de <span className="font-semibold text-amber-800">{recipes.length}</span> recette{recipes.length > 1 ? 's' : ''}
           </span>
         </div>
       </div>
@@ -462,19 +462,19 @@ export default function RecipeManager() {
       <div className="max-w-6xl mx-auto px-4 py-4 md:py-8">
         {currentPage === 'view' && selectedRecipe ? (
           /* Vue détaillée d'une recette */
-          <div className="bg-white rounded-lg shadow-md p-8">
+          <div className="bg-white rounded-xl shadow-sm p-8 border border-stone-200/60">
             <button
               onClick={() => {
                 setCurrentPage('search');
                 setSelectedRecipe(null);
               }}
-              className="mb-6 px-4 py-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors font-medium"
+              className="mb-6 px-4 py-2 text-amber-800 hover:bg-stone-100 rounded-lg transition-colors font-medium"
             >
               ← Retour aux recettes
             </button>
 
             <div className="flex justify-between items-start mb-6">
-              <h1 className="text-3xl font-bold text-orange-600">
+              <h1 className="text-3xl font-bold text-stone-800">
                 {selectedRecipe.name}
               </h1>
               
@@ -515,11 +515,11 @@ export default function RecipeManager() {
 
             {/* Ingrédients */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Ingrédients</h2>
+              <h2 className="text-2xl font-semibold text-stone-700 mb-4">Ingrédients</h2>
               <ul className="space-y-2">
                 {selectedRecipe.ingredients.map((ing, idx) => (
-                  <li key={idx} className="text-gray-700 text-lg">
-                    • <span className="font-medium">{ing.name}</span>: {ing.quantity}
+                  <li key={idx} className="text-stone-600 text-lg">
+                    • <span className="font-medium text-stone-700">{ing.name}</span>: {ing.quantity}
                   </li>
                 ))}
               </ul>
@@ -527,14 +527,14 @@ export default function RecipeManager() {
 
             {/* Étapes */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">Étapes de préparation</h2>
+              <h2 className="text-2xl font-semibold text-stone-700 mb-4">Étapes de préparation</h2>
               <ol className="space-y-4">
                 {selectedRecipe.steps.map((step, idx) => (
                   <li key={idx} className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">
+                    <span className="flex-shrink-0 w-8 h-8 bg-amber-700 text-white rounded-full flex items-center justify-center font-semibold">
                       {idx + 1}
                     </span>
-                    <p className="text-gray-700 text-lg pt-1">{step}</p>
+                    <p className="text-stone-600 text-lg pt-1">{step}</p>
                   </li>
                 ))}
               </ol>
@@ -542,25 +542,25 @@ export default function RecipeManager() {
 
             {/* Tips & Astuces */}
             {selectedRecipe.tips && selectedRecipe.tips.length > 0 ? (
-              <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-6">
-                <h2 className="text-2xl font-bold text-amber-700 mb-4 flex items-center gap-2">
-                  <span>💡</span> Tips & Astuces
+              <div className="bg-amber-50/50 border border-amber-200/60 rounded-xl p-6">
+                <h2 className="text-xl font-semibold text-amber-800 mb-4">
+                  Tips & Astuces
                 </h2>
                 <ul className="space-y-3">
                   {selectedRecipe.tips.map((tip, idx) => (
-                    <li key={idx} className="flex gap-3 text-gray-700">
-                      <span className="text-amber-500 font-bold">•</span>
+                    <li key={idx} className="flex gap-3 text-stone-600">
+                      <span className="text-amber-700 font-medium">•</span>
                       <p className="text-base leading-relaxed">{tip}</p>
                     </li>
                   ))}
                 </ul>
               </div>
             ) : (
-              <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 bg-gray-50/50">
-                <h2 className="text-xl font-semibold text-gray-400 mb-2 flex items-center gap-2">
-                  <span>💡</span> Tips & Astuces
+              <div className="border border-dashed border-stone-200 rounded-xl p-6 bg-stone-50/50">
+                <h2 className="text-lg font-medium text-stone-400 mb-2">
+                  Tips & Astuces
                 </h2>
-                <p className="text-gray-400 italic text-sm">Aucune astuce pour cette recette.</p>
+                <p className="text-stone-400 italic text-sm">Aucune astuce pour cette recette.</p>
               </div>
             )}
           </div>
@@ -578,7 +578,7 @@ export default function RecipeManager() {
             {recipes.length > 0 && (
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-800">
+                  <h2 className="text-xl font-semibold text-stone-700">
                     {searchTerm ? 'Résultats filtrés' : 'Toutes les recettes'}
                   </h2>
                   {searchTerm && (
@@ -587,7 +587,7 @@ export default function RecipeManager() {
                         setSearchTerm('');
                         setSearchHistory([]);
                       }}
-                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium text-sm"
+                      className="px-4 py-2 bg-stone-200 text-stone-600 rounded-lg hover:bg-stone-300 transition-colors font-medium text-sm"
                     >
                       ✕ Supprimer le filtre
                     </button>
@@ -608,7 +608,7 @@ export default function RecipeManager() {
                     <div
                       key={`recipe-${recipe.id}-${idx}`}
                       onClick={() => handleOpenRecipe(recipe)}
-                      className="bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.1)] p-4 transition-all duration-300 relative cursor-pointer border border-gray-100/80 hover:-translate-y-0.5"
+                      className="bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] p-4 transition-all duration-200 relative cursor-pointer border border-stone-200/60 hover:-translate-y-0.5"
                     >
                       {/* Menu 3 points */}
                       <div className="absolute top-3 right-3 z-10">
@@ -617,16 +617,16 @@ export default function RecipeManager() {
                             e.stopPropagation();
                             setShowMenu(showMenu === recipe.id ? null : recipe.id);
                           }}
-                          className="p-1.5 hover:bg-gray-50 rounded-full transition-colors"
+                          className="p-1.5 hover:bg-stone-100 rounded-full transition-colors"
                         >
-                          <MoreVertical size={18} className="text-gray-400" />
+                          <MoreVertical size={18} className="text-stone-400" />
                         </button>
                         
                         {showMenu === recipe.id && (
-                          <div className="absolute right-0 mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 z-20">
+                          <div className="absolute right-0 mt-1 w-36 bg-white rounded-lg shadow-md border border-stone-200 z-20">
                             <button
                               onClick={() => handleEditRecipe(recipe)}
-                              className="w-full text-left px-3 py-2 hover:bg-gray-50 text-gray-600 text-sm rounded-t-lg"
+                              className="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-600 text-sm rounded-t-lg"
                             >
                               Modifier
                             </button>
@@ -641,26 +641,26 @@ export default function RecipeManager() {
                       </div>
 
                       {/* Titre de la recette */}
-                      <h3 className="text-lg font-bold text-orange-500 pr-8 leading-tight tracking-tight">
+                      <h3 className="text-lg font-semibold text-stone-800 pr-8 leading-tight tracking-tight">
                         {recipe.name}
                       </h3>
                       
                       {/* Séparateur fin */}
-                      <div className="h-px bg-gray-100 my-2.5"></div>
+                      <div className="h-px bg-stone-100 my-2.5"></div>
                       
                       {/* Ingrédients en 2 colonnes */}
                       <div className="grid grid-cols-2 gap-x-3 gap-y-0.5">
                         {recipe.ingredients.slice(0, 8).map((ing, idx) => (
-                          <div key={idx} className="flex items-start gap-1.5 text-xs text-gray-600 leading-relaxed">
-                            <span className="text-gray-300 mt-0.5">•</span>
+                          <div key={idx} className="flex items-start gap-1.5 text-xs text-stone-500 leading-relaxed">
+                            <span className="text-stone-300 mt-0.5">•</span>
                             <span className="truncate">
-                              <span className="font-medium text-gray-700">{ing.name}</span>
-                              {ing.quantity && <span className="text-gray-400"> {ing.quantity}</span>}
+                              <span className="font-medium text-stone-600">{ing.name}</span>
+                              {ing.quantity && <span className="text-stone-400"> {ing.quantity}</span>}
                             </span>
                           </div>
                         ))}
                         {recipe.ingredients.length > 8 && (
-                          <div className="col-span-2 text-xs text-gray-400 mt-1">
+                          <div className="col-span-2 text-xs text-stone-400 mt-1">
                             +{recipe.ingredients.length - 8} autres...
                           </div>
                         )}
@@ -687,7 +687,7 @@ export default function RecipeManager() {
                   type="text"
                   value={recipeName}
                   onChange={(e) => setRecipeName(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  className="w-full px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                   placeholder="Ex: Tarte aux pommes"
                 />
               </div>
@@ -703,14 +703,14 @@ export default function RecipeManager() {
                       type="text"
                       value={ing.name}
                       onChange={(e) => updateIngredient(index, 'name', e.target.value)}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="flex-1 px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                       placeholder="Nom de l'ingrédient"
                     />
                     <input
                       type="text"
                       value={ing.quantity}
                       onChange={(e) => updateIngredient(index, 'quantity', e.target.value)}
-                      className="w-32 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-32 px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                       placeholder="Quantité"
                     />
                     {ingredients.length > 1 && (
@@ -740,13 +740,13 @@ export default function RecipeManager() {
                 </label>
                 {steps.map((step, index) => (
                   <div key={`step-${index}`} className="flex gap-2 mb-2">
-                    <span className="px-3 py-2 bg-orange-100 text-orange-600 rounded-lg font-semibold">
+                    <span className="px-3 py-2 bg-amber-100 text-amber-700 rounded-lg font-semibold">
                       {index + 1}
                     </span>
                     <textarea
                       value={step}
                       onChange={(e) => updateStep(index, e.target.value)}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="flex-1 px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-600"
                       placeholder="Décrivez cette étape..."
                       rows="2"
                     />
@@ -773,7 +773,7 @@ export default function RecipeManager() {
               {/* Bouton de soumission */}
               <button
                 onClick={handleSubmitRecipe}
-                className="w-full px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-semibold text-lg"
+                className="w-full px-6 py-3 bg-amber-700 text-white rounded-lg hover:bg-amber-800 transition-colors font-semibold text-lg"
               >
                 {editingRecipe ? 'Mettre à jour la recette' : 'Enregistrer la recette'}
               </button>
