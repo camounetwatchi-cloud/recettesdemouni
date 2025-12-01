@@ -301,22 +301,32 @@ export default function RecipeManager() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50">
-      {/* Navbar */}
-      <nav className="bg-white shadow-md">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+      {/* Navbar - Sticky avec effet glassmorphism */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg shadow-lg border-b border-white/20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16 md:h-18">
+            {/* Logo */}
             <button
               onClick={() => {
                 setCurrentPage('search');
                 setSelectedRecipe(null);
               }}
-              className="flex items-center gap-1 md:gap-2 text-orange-600 hover:opacity-70 transition-opacity cursor-pointer"
+              className="flex items-center gap-2 md:gap-3 text-orange-600 hover:scale-105 transition-all duration-300 cursor-pointer group"
             >
-              <ChefHat size={24} className="md:w-8 md:h-8" />
-              <span className="text-lg md:text-xl font-bold hidden sm:inline">Recettes de mounie</span>
-              <span className="text-sm md:text-base font-bold sm:hidden">Mounie</span>
+              <div className="p-2 bg-gradient-to-br from-orange-500 to-amber-500 rounded-xl shadow-md group-hover:shadow-lg transition-shadow">
+                <ChefHat size={20} className="md:w-6 md:h-6 text-white" />
+              </div>
+              <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent hidden sm:inline">
+                Recettes de Mounie
+              </span>
+              <span className="text-base font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent sm:hidden">
+                Mounie
+              </span>
             </button>
-            <div className="hidden md:flex gap-2 lg:gap-4">
+
+            {/* Navigation Desktop */}
+            <div className="hidden md:flex items-center gap-3 lg:gap-4">
+              {/* Bouton Trouver - Style contour/outline */}
               <button
                 onClick={() => {
                   setCurrentPage('search');
@@ -326,22 +336,26 @@ export default function RecipeManager() {
                   setSteps(['']);
                   setSelectedRecipe(null);
                 }}
-                className={`px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium transition-colors ${
+                className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-medium transition-all duration-300 flex items-center gap-2 ${
                   currentPage === 'search'
-                    ? 'bg-orange-500 text-white'
-                    : 'text-gray-700 hover:bg-orange-100'
+                    ? 'bg-orange-500 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5'
+                    : 'border-2 border-orange-300 text-orange-600 hover:border-orange-500 hover:bg-orange-50 hover:-translate-y-0.5'
                 }`}
               >
-                <Search className="inline mr-1 lg:mr-2 w-4 h-4 lg:w-5 lg:h-5" size={16} />
-                <span className="hidden lg:inline">Trouver</span>
+                <Search size={18} />
+                <span>Trouver</span>
               </button>
+
+              {/* Bouton Scanner - Style plein (action principale) */}
               <button
                 onClick={() => setShowScanner(true)}
-                className="px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 transition-colors"
+                className="px-5 lg:px-6 py-2.5 lg:py-3 rounded-full font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-2"
               >
-                <Camera className="inline mr-1 lg:mr-2" size={16} />
-                <span className="hidden lg:inline">Scanner</span>
+                <Camera size={18} />
+                <span>Scanner</span>
               </button>
+
+              {/* Bouton Ajouter - Style lien simple */}
               <button
                 onClick={() => {
                   setCurrentPage('add');
@@ -351,76 +365,95 @@ export default function RecipeManager() {
                   setSteps(['']);
                   setSelectedRecipe(null);
                 }}
-                className={`px-2 lg:px-4 py-2 text-sm lg:text-base rounded-lg font-medium transition-colors ${
+                className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-medium transition-all duration-300 flex items-center gap-2 ${
                   currentPage === 'add'
-                    ? 'bg-orange-500 text-white'
-                    : 'text-gray-700 hover:bg-orange-100'
+                    ? 'bg-orange-500 text-white shadow-md hover:shadow-lg hover:-translate-y-0.5'
+                    : 'text-gray-600 hover:text-orange-600 hover:bg-orange-50 hover:-translate-y-0.5'
                 }`}
               >
-                <Plus className="inline mr-1 lg:mr-2" size={16} />
-                <span className="hidden lg:inline">Ajouter</span>
+                <Plus size={18} />
+                <span>Ajouter</span>
               </button>
             </div>
             
-            {/* Menu mobile */}
+            {/* Bouton Menu Mobile */}
             <button
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="md:hidden p-2 text-orange-600"
+              className="md:hidden p-2.5 text-orange-600 hover:bg-orange-100 rounded-xl transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                {showMobileMenu ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
               </svg>
             </button>
           </div>
           
-          {/* Menu déroulant mobile */}
-          {showMobileMenu && (
-            <div className="md:hidden grid grid-cols-2 gap-2 pb-4">
-              <button
-                onClick={() => {
-                  setCurrentPage('search');
-                  setEditingRecipe(null);
-                  setShowMobileMenu(false);
-                }}
-                className={`px-3 py-2 text-sm rounded-lg font-medium transition-colors ${
-                  currentPage === 'search'
-                    ? 'bg-orange-500 text-white'
-                    : 'text-gray-700 hover:bg-orange-100'
-                }`}
-              >
-                🔍 Chercher
-              </button>
+          {/* Menu déroulant mobile avec animation */}
+          <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+            showMobileMenu ? 'max-h-48 opacity-100 pb-4' : 'max-h-0 opacity-0'
+          }`}>
+            <div className="flex flex-col gap-2 pt-2">
+              {/* Scanner en premier sur mobile (action principale) */}
               <button
                 onClick={() => {
                   setShowScanner(true);
                   setShowMobileMenu(false);
                 }}
-                className="px-3 py-2 text-sm rounded-lg font-medium text-white bg-green-500 hover:bg-green-600 transition-colors"
+                className="w-full px-4 py-3 rounded-full font-semibold text-white bg-gradient-to-r from-green-500 to-emerald-500 shadow-md flex items-center justify-center gap-2 active:scale-95 transition-transform"
               >
-                📷 Scanner
+                <Camera size={20} />
+                Scanner une recette
               </button>
-              <button
-                onClick={() => {
-                  setCurrentPage('add');
-                  setEditingRecipe(null);
-                  setShowMobileMenu(false);
-                }}
-                className={`px-3 py-2 text-sm rounded-lg font-medium transition-colors ${
-                  currentPage === 'add'
-                    ? 'bg-orange-500 text-white'
-                    : 'text-gray-700 hover:bg-orange-100'
-                }`}
-              >
-                ➕ Ajouter
-              </button>
+              
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setCurrentPage('search');
+                    setEditingRecipe(null);
+                    setShowMobileMenu(false);
+                  }}
+                  className={`flex-1 px-4 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 ${
+                    currentPage === 'search'
+                      ? 'bg-orange-500 text-white shadow-md'
+                      : 'border-2 border-orange-300 text-orange-600'
+                  }`}
+                >
+                  <Search size={18} />
+                  Trouver
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setCurrentPage('add');
+                    setEditingRecipe(null);
+                    setShowMobileMenu(false);
+                  }}
+                  className={`flex-1 px-4 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 ${
+                    currentPage === 'add'
+                      ? 'bg-orange-500 text-white shadow-md'
+                      : 'text-gray-600 hover:text-orange-600 bg-gray-100'
+                  }`}
+                >
+                  <Plus size={18} />
+                  Ajouter
+                </button>
+              </div>
             </div>
-          )}
-          
-          <div className="text-center py-2 text-gray-700 font-medium text-sm md:text-base">
-            Chef Mounie, c'est plus de {recipes.length} recette{recipes.length > 1 ? 's' : ''}
           </div>
         </div>
       </nav>
+
+      {/* Compteur de recettes - Bandeau subtil */}
+      <div className="bg-gradient-to-r from-orange-100/50 to-amber-100/50 border-b border-orange-100">
+        <div className="max-w-6xl mx-auto px-4 py-2 text-center">
+          <span className="text-sm md:text-base text-orange-700 font-medium">
+            🍳 Chef Mounie, c'est plus de <span className="font-bold text-orange-600">{recipes.length}</span> recette{recipes.length > 1 ? 's' : ''}
+          </span>
+        </div>
+      </div>
 
       {/* Contenu principal */}
       <div className="max-w-6xl mx-auto px-4 py-4 md:py-8">
