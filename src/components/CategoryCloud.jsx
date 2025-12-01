@@ -73,7 +73,7 @@ export default function CategoryCloud({ recipes, searchTerm, setSearchTerm, onSe
           <div className="h-px bg-gradient-to-r from-transparent via-orange-200 to-transparent"></div>
         </div>
 
-        {/* Barre de recherche - Cadre net et distinct */}}
+        {/* Barre de recherche - Cadre net et distinct */}
         <div className="w-full max-w-md">
           <div className="bg-orange-50/50 rounded-2xl shadow-sm p-4 border border-orange-200/60">
             <div className="flex gap-2 w-full">
