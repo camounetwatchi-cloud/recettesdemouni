@@ -223,11 +223,11 @@ Important:
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-800">Scanner de Recette</h2>
+        <div className="flex justify-between items-center p-6 border-b border-stone-200">
+          <h2 className="text-2xl font-bold text-stone-800">Scanner de Recette</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-stone-400 hover:text-stone-600"
           >
             <X size={24} />
           </button>
@@ -245,22 +245,22 @@ Important:
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={loading}
-                      className="p-6 border-2 border-dashed border-blue-300 rounded-lg hover:bg-blue-50 disabled:opacity-50 flex flex-col items-center justify-center gap-2 transition"
+                      className="p-6 border-2 border-dashed border-amber-300 rounded-lg hover:bg-amber-50 disabled:opacity-50 flex flex-col items-center justify-center gap-2 transition"
                     >
-                      <Upload size={32} className="text-blue-500" />
-                      <span className="font-semibold text-gray-700">Importer une photo</span>
-                      <span className="text-sm text-gray-500">JPG, PNG...</span>
+                      <Upload size={32} className="text-amber-600" />
+                      <span className="font-semibold text-stone-700">Importer une photo</span>
+                      <span className="text-sm text-stone-500">JPG, PNG...</span>
                     </button>
 
                     {/* Camera */}
                     <button
                       onClick={() => cameraInputRef.current?.click()}
                       disabled={loading}
-                      className="p-6 border-2 border-dashed border-green-300 rounded-lg hover:bg-green-50 disabled:opacity-50 flex flex-col items-center justify-center gap-2 transition"
+                      className="p-6 border-2 border-dashed border-amber-300 rounded-lg hover:bg-amber-50 disabled:opacity-50 flex flex-col items-center justify-center gap-2 transition"
                     >
-                      <Camera size={32} className="text-green-500" />
-                      <span className="font-semibold text-gray-700">Prendre une photo</span>
-                      <span className="text-sm text-gray-500">Caméra</span>
+                      <Camera size={32} className="text-amber-600" />
+                      <span className="font-semibold text-stone-700">Prendre une photo</span>
+                      <span className="text-sm text-stone-500">Caméra</span>
                     </button>
                   </div>
 
@@ -285,22 +285,22 @@ Important:
               {/* Loading State */}
               {loading && (
                 <div className="flex flex-col items-center justify-center py-12">
-                  <Loader size={40} className="text-blue-500 animate-spin mb-3" />
-                  <p className="text-gray-600">Analyse de la recette en cours...</p>
+                  <Loader size={40} className="text-amber-600 animate-spin mb-3" />
+                  <p className="text-stone-600">Analyse de la recette en cours...</p>
                 </div>
               )}
 
               {/* Error */}
               {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3">
-                  <AlertCircle size={20} className="text-red-500 flex-shrink-0" />
+                <div className="mb-6 p-4 bg-stone-100 border border-stone-300 rounded-lg flex gap-3">
+                  <AlertCircle size={20} className="text-amber-600 flex-shrink-0" />
                   <div>
-                    <h3 className="font-semibold text-red-800">Erreur</h3>
-                    <p className="text-red-700 text-sm">{error}</p>
+                    <h3 className="font-semibold text-stone-800">Erreur</h3>
+                    <p className="text-stone-600 text-sm">{error}</p>
                     {image && (
                       <button
                         onClick={resetForm}
-                        className="mt-2 text-sm text-red-600 hover:text-red-800 underline"
+                        className="mt-2 text-sm text-amber-700 hover:text-amber-800 underline"
                       >
                         Réessayer avec une autre image
                       </button>
@@ -319,7 +319,7 @@ Important:
                   />
                   <button
                     onClick={resetForm}
-                    className="mt-2 text-sm text-gray-600 hover:text-gray-800 underline"
+                    className="mt-2 text-sm text-stone-600 hover:text-stone-800 underline"
                   >
                     Changer d'image
                   </button>
@@ -332,10 +332,10 @@ Important:
               <div className="space-y-6">
                 {/* Nom */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-stone-700 mb-2">
                     Nom de la recette
                   </label>
-                  <p className="text-lg text-gray-900 bg-gray-50 p-3 rounded">
+                  <p className="text-lg text-stone-900 bg-stone-50 p-3 rounded">
                     {extractedRecipe.name}
                   </p>
                 </div>
@@ -344,38 +344,38 @@ Important:
                 <div className="grid grid-cols-2 gap-4">
                   {extractedRecipe.prepTime && (
                     <div>
-                      <label className="text-sm font-semibold text-gray-700">Préparation</label>
-                      <p className="text-gray-600">{extractedRecipe.prepTime}</p>
+                      <label className="text-sm font-semibold text-stone-700">Préparation</label>
+                      <p className="text-stone-600">{extractedRecipe.prepTime}</p>
                     </div>
                   )}
                   {extractedRecipe.cookTime && (
                     <div>
-                      <label className="text-sm font-semibold text-gray-700">Cuisson</label>
-                      <p className="text-gray-600">{extractedRecipe.cookTime}</p>
+                      <label className="text-sm font-semibold text-stone-700">Cuisson</label>
+                      <p className="text-stone-600">{extractedRecipe.cookTime}</p>
                     </div>
                   )}
                   {extractedRecipe.servings && (
                     <div>
-                      <label className="text-sm font-semibold text-gray-700">Portions</label>
-                      <p className="text-gray-600">{extractedRecipe.servings}</p>
+                      <label className="text-sm font-semibold text-stone-700">Portions</label>
+                      <p className="text-stone-600">{extractedRecipe.servings}</p>
                     </div>
                   )}
                   {extractedRecipe.difficulty && (
                     <div>
-                      <label className="text-sm font-semibold text-gray-700">Difficulté</label>
-                      <p className="text-gray-600">{extractedRecipe.difficulty}</p>
+                      <label className="text-sm font-semibold text-stone-700">Difficulté</label>
+                      <p className="text-stone-600">{extractedRecipe.difficulty}</p>
                     </div>
                   )}
                 </div>
 
                 {/* Ingrédients */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  <label className="block text-sm font-semibold text-stone-700 mb-3">
                     Ingrédients ({extractedRecipe.ingredients.length})
                   </label>
-                  <ul className="space-y-2 bg-gray-50 p-4 rounded">
+                  <ul className="space-y-2 bg-stone-50 p-4 rounded">
                     {extractedRecipe.ingredients.map((ing, idx) => (
-                      <li key={idx} className="text-gray-700">
+                      <li key={idx} className="text-stone-700">
                         {ing.quantity && <span className="font-semibold">{ing.quantity}</span>}{' '}
                         {ing.name}
                       </li>
@@ -385,12 +385,12 @@ Important:
 
                 {/* Étapes */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  <label className="block text-sm font-semibold text-stone-700 mb-3">
                     Étapes ({extractedRecipe.steps.length})
                   </label>
-                  <ol className="space-y-2 bg-gray-50 p-4 rounded list-decimal list-inside">
+                  <ol className="space-y-2 bg-stone-50 p-4 rounded list-decimal list-inside">
                     {extractedRecipe.steps.map((step, idx) => (
-                      <li key={idx} className="text-gray-700">
+                      <li key={idx} className="text-stone-700">
                         {step}
                       </li>
                     ))}
@@ -402,13 +402,13 @@ Important:
               <div className="flex gap-3 mt-8">
                 <button
                   onClick={resetForm}
-                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 font-semibold transition"
+                  className="flex-1 px-4 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 font-semibold transition"
                 >
                   Recommencer
                 </button>
                 <button
                   onClick={handleAcceptRecipe}
-                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 font-semibold transition flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2 bg-amber-700 text-white rounded-lg hover:bg-amber-800 font-semibold transition flex items-center justify-center gap-2"
                 >
                   ✓ Ajouter cette recette
                 </button>
