@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, ChefHat, MoreVertical, Camera } from 'lucide-react';
+import { Search, Plus, MoreVertical, Camera } from 'lucide-react';
 import RecipeScanner from './RecipeScanner';
 import CategoryCloud from './components/CategoryCloud';
 import { getRecipes, saveRecipe, saveRecipes, deleteRecipe, updateRecipe, onRecipesChange } from './services/firestoreService';
@@ -313,8 +313,8 @@ export default function RecipeManager() {
               }}
               className="flex items-center gap-3 md:gap-4 text-amber-800 hover:scale-105 transition-all duration-300 cursor-pointer group"
             >
-              <div className="p-2.5 md:p-3 bg-gradient-to-br from-amber-700 to-amber-800 rounded-2xl shadow-md group-hover:shadow-lg transition-all">
-                <ChefHat size={24} className="md:w-8 md:h-8 text-white" />
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-md group-hover:shadow-lg transition-all overflow-hidden">
+                <img src="/logoMounie.png" alt="Logo Mounie" className="w-full h-full object-cover" />
               </div>
               <div className="hidden sm:flex flex-col">
                 <span className="text-xl md:text-2xl font-bold tracking-tight text-stone-800">
