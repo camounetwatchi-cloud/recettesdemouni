@@ -313,7 +313,7 @@ export default function RecipeManager() {
               }}
               className="flex items-center gap-3 md:gap-4 text-amber-800 hover:scale-105 transition-all duration-300 cursor-pointer group"
             >
-              <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl shadow-md group-hover:shadow-lg transition-all overflow-hidden">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl shadow-md group-hover:shadow-lg transition-all overflow-hidden">
                 <img src="/logoMounie.png" alt="Logo Mounie" className="w-full h-full object-cover" />
               </div>
               <div className="hidden sm:flex flex-col">
@@ -329,26 +329,6 @@ export default function RecipeManager() {
 
             {/* Navigation Desktop */}
             <div className="hidden md:flex items-center gap-3 lg:gap-4">
-              {/* Bouton Trouver - Style contour/outline */}
-              <button
-                onClick={() => {
-                  setCurrentPage('search');
-                  setEditingRecipe(null);
-                  setRecipeName('');
-                  setIngredients([{ name: '', quantity: '' }]);
-                  setSteps(['']);
-                  setSelectedRecipe(null);
-                }}
-                className={`px-4 lg:px-5 py-2 lg:py-2.5 rounded-full font-medium transition-all duration-200 flex items-center gap-2 ${
-                  currentPage === 'search'
-                    ? 'bg-amber-700 text-white shadow-sm hover:bg-amber-800'
-                    : 'border border-stone-300 text-stone-600 hover:border-amber-400 hover:text-amber-700 hover:bg-amber-50'
-                }`}
-              >
-                <Search size={18} />
-                <span>Trouver</span>
-              </button>
-
               {/* Bouton Scanner - Style plein (action principale) */}
               <button
                 onClick={() => setShowScanner(true)}
@@ -411,39 +391,21 @@ export default function RecipeManager() {
                 Scanner une recette
               </button>
               
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    setCurrentPage('search');
-                    setEditingRecipe(null);
-                    setShowMobileMenu(false);
-                  }}
-                  className={`flex-1 px-4 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 ${
-                    currentPage === 'search'
-                      ? 'bg-amber-700 text-white shadow-sm'
-                      : 'border border-stone-300 text-stone-600'
-                  }`}
-                >
-                  <Search size={18} />
-                  Trouver
-                </button>
-                
-                <button
-                  onClick={() => {
-                    setCurrentPage('add');
-                    setEditingRecipe(null);
-                    setShowMobileMenu(false);
-                  }}
-                  className={`flex-1 px-4 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 ${
-                    currentPage === 'add'
-                      ? 'bg-amber-700 text-white shadow-sm'
-                      : 'text-stone-500 bg-stone-100'
-                  }`}
-                >
-                  <Plus size={18} />
-                  Ajouter
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  setCurrentPage('add');
+                  setEditingRecipe(null);
+                  setShowMobileMenu(false);
+                }}
+                className={`w-full px-4 py-2.5 rounded-full font-medium transition-all flex items-center justify-center gap-2 ${
+                  currentPage === 'add'
+                    ? 'bg-amber-700 text-white shadow-sm'
+                    : 'text-stone-500 bg-stone-100'
+                }`}
+              >
+                <Plus size={18} />
+                Ajouter une recette
+              </button>
             </div>
           </div>
         </div>
