@@ -1,6 +1,14 @@
 // Extrait les catégories récurrentes des noms de recettes
 // Ces mots-clés seront utilisés pour créer un nuage de mots dynamique
 
+// Fonction utilitaire pour normaliser le texte (enlever accents et mettre en minuscules)
+const normalizeText = (text) => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+};
+
 export const COMMON_CATEGORIES = [
   'gâteau', 'gateau', 'tarte', 'cake', 'biscuit', 'cookie', 'brownie',
   'crème', 'creme', 'mousse', 'flan', 'soufflé', 'souffle', 'panna cotta',
@@ -33,12 +41,12 @@ export function extractCategoriesFromRecipes(recipes) {
   const categoryCount = {};
 
   recipes.forEach(recipe => {
-    const recipeName = recipe.name.toLowerCase();
+    const normalizedRecipeName = normalizeText(recipe.name);
     
     COMMON_CATEGORIES.forEach(category => {
-      // Utiliser une regex pour chercher le mot complet avec des limites
-      const regex = new RegExp(`\\b${category.toLowerCase()}\\b`);
-      if (regex.test(recipeName)) {
+      // Recherche de sous-chaîne insensible à la casse et aux accents
+      const normalizedCategory = normalizeText(category);
+      if (normalizedRecipeName.includes(normalizedCategory)) {
         categoryCount[category] = (categoryCount[category] || 0) + 1;
       }
     });

@@ -4,6 +4,14 @@ import RecipeScanner from './RecipeScanner';
 import CategoryCloud from './components/CategoryCloud';
 import { getRecipes, saveRecipe, saveRecipes, deleteRecipe, updateRecipe, onRecipesChange } from './services/firestoreService';
 
+// Fonction utilitaire pour normaliser le texte (enlever accents et mettre en minuscules)
+const normalizeText = (text) => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+};
+
 export default function RecipeManager() {
   const [currentPage, setCurrentPage] = useState('search');
   const [recipes, setRecipes] = useState([]);
@@ -81,13 +89,11 @@ export default function RecipeManager() {
     if (!searchTerm.trim()) return;
 
     const foundRecipes = recipes.filter(recipe => {
-      const recipeName = recipe.name.toLowerCase();
-      const searchLower = searchTerm.toLowerCase();
+      const normalizedRecipeName = normalizeText(recipe.name);
+      const normalizedSearch = normalizeText(searchTerm);
       
-      // Créer une regex qui cherche le mot complet avec des limites
-      // \b = limite de mot, \s = espace, ou début/fin de chaîne
-      const regex = new RegExp(`\\b${searchLower}\\b`, 'i');
-      return regex.test(recipeName);
+      // Recherche de sous-chaîne insensible à la casse et aux accents
+      return normalizedRecipeName.includes(normalizedSearch);
     });
 
     if (foundRecipes.length > 0) {
@@ -559,11 +565,10 @@ export default function RecipeManager() {
                   {[...recipes]
                     .filter(recipe => {
                       if (!searchTerm.trim()) return true;
-                      const recipeName = recipe.name.toLowerCase();
-                      const searchLower = searchTerm.toLowerCase();
-                      // Utiliser une regex pour chercher le mot complet
-                      const regex = new RegExp(`\\b${searchLower}\\b`, 'i');
-                      return regex.test(recipeName);
+                      const normalizedRecipeName = normalizeText(recipe.name);
+                      const normalizedSearch = normalizeText(searchTerm);
+                      // Recherche de sous-chaîne insensible à la casse et aux accents
+                      return normalizedRecipeName.includes(normalizedSearch);
                     })
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map((recipe, idx) => (
