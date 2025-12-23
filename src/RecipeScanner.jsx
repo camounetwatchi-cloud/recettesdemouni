@@ -146,8 +146,12 @@ Important:
       setError(null);
       
       // Vérifier le type - accepter les formats image courants
+      // Inclure aussi les extensions en cas de type MIME inconnu
       const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif'];
-      const isValidType = file.type.startsWith('image/') || validImageTypes.includes(file.type);
+      const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif'];
+      const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+      
+      const isValidType = validImageTypes.includes(file.type) || validExtensions.includes(fileExtension);
       
       if (!isValidType) {
         setError('Veuillez sélectionner une image valide (JPG, PNG, GIF, WebP, HEIC)');
