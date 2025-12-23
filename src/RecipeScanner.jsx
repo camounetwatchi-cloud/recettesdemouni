@@ -165,19 +165,31 @@ Important:
       const reader = new FileReader();
       reader.onload = async (e) => {
         try {
-          const base64 = e.target?.result?.split(',')[1];
+          const dataUrl = e.target?.result;
+          const base64 = dataUrl?.split(',')[1];
           if (!base64) throw new Error('Impossible de lire le fichier');
-          
-          let mimeType = file.type;
-          
-          // Pour HEIC/HEIF, utiliser un type MIME supporté par Gemini
-          if (file.type === 'image/heic' || file.type === 'image/heif') {
-            mimeType = 'image/jpeg';
-            console.log('INFO: Conversion HEIC -> JPEG pour Gemini API');
+
+          // Déduire le mimeType de façon robuste (file.type peut être vide sur certains navigateurs)
+          const extension = file.name?.substring(file.name.lastIndexOf('.') + 1).toLowerCase() || '';
+          const extToMime = {
+            jpg: 'image/jpeg',
+            jpeg: 'image/jpeg',
+            png: 'image/png',
+            gif: 'image/gif',
+            webp: 'image/webp',
+            heic: 'image/heic',
+            heif: 'image/heif'
+          };
+
+          let mimeType = file.type || extToMime[extension] || 'image/jpeg';
+
+          // Si HEIC/HEIF détecté, on envoie un mimeType non vide (ne convertit pas le fichier côté client)
+          if (mimeType === 'image/heic' || mimeType === 'image/heif') {
+            console.log('INFO: Image HEIC/HEIF détectée, envoi en tant que', mimeType);
           }
-          
+
           console.log('DEBUG: File info -', { fileName: file.name, fileType: file.type, mimeType });
-          
+
           await extractRecipeFromImage(base64, mimeType);
         } catch (err) {
           setError(err.message || 'Erreur lors du traitement');
